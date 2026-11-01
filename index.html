@@ -1,0 +1,1893 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>منظومة فحص واستلام البضائع الاحترافية الذكية</title>
+    <style>
+        :root {
+            --primary: #1B365D;
+            --primary-light: #2C5282;
+            --secondary: #0E6251;
+            --accent: #D97706;
+            --bg: #F1F5F9;
+            --card-bg: #FFFFFF;
+            --text: #0F172A;
+            --text-muted: #475569;
+            --border: #CBD5E1;
+            --success-bg: #DCFCE7;
+            --success-border: #16A34A;
+            --success-text: #14532D;
+            --danger-bg: #FEE2E2;
+            --danger-border: #DC2626;
+            --danger-text: #7F1D1D;
+            --warn-bg: #FEF3C7;
+            --warn-border: #D97706;
+            --warn-text: #78350F;
+            --highlight-bg: #FFFBEB;
+            --highlight-text: #9A3412;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            padding-bottom: 95px;
+            max-width: 650px;
+            margin: 0 auto;
+            min-height: 100vh;
+            box-shadow: 0 0 25px rgba(0,0,0,0.1);
+        }
+
+        input.nav-radio { display: none !important; }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), #0F172A);
+            color: #fff;
+            padding: 16px 12px 10px;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        header h1 {
+            font-size: 1.12rem;
+            text-align: center;
+            margin-bottom: 4px;
+            font-weight: 800;
+        }
+        header p {
+            font-size: 0.76rem;
+            text-align: center;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .top-tabs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            background: rgba(255,255,255,0.14);
+            padding: 5px;
+            border-radius: 10px;
+        }
+        .top-tab-lbl {
+            background: transparent;
+            color: #E2E8F0;
+            padding: 9px 4px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            user-select: none;
+        }
+        .badge-count {
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.7rem;
+            padding: 1px 6px;
+            border-radius: 99px;
+        }
+
+        #tab-radio-quick:checked ~ header .top-tabs label[for="tab-radio-quick"],
+        #tab-radio-log:checked ~ header .top-tabs label[for="tab-radio-log"],
+        #tab-radio-settings:checked ~ header .top-tabs label[for="tab-radio-settings"] {
+            background: #FFFFFF;
+            color: var(--primary);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+        }
+
+        #tab-radio-quick:checked ~ .bottom-nav label[for="tab-radio-quick"],
+        #tab-radio-log:checked ~ .bottom-nav label[for="tab-radio-log"],
+        #tab-radio-settings:checked ~ .bottom-nav label[for="tab-radio-settings"] {
+            color: var(--primary);
+            background: #EFF6FF;
+            border-top: 3px solid var(--primary);
+        }
+
+        .container { padding: 12px; }
+        .tab-pane { display: none; }
+        #tab-radio-quick:checked ~ .container #pane-quick { display: block; }
+        #tab-radio-log:checked ~ .container #pane-log { display: block; }
+        #tab-radio-settings:checked ~ .container #pane-settings { display: block; }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 14px;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+        }
+        .card-header {
+            font-size: 0.92rem;
+            font-weight: 800;
+            color: var(--primary);
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            border-bottom: 2px solid var(--bg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .cat-pills-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 7px;
+            margin-bottom: 10px;
+            max-height: 230px;
+            overflow-y: auto;
+            padding: 2px;
+        }
+        .cat-pill {
+            padding: 8px 6px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            background: #F8FAFC;
+            color: var(--text);
+            font-size: 0.76rem;
+            font-weight: 800;
+            text-align: center;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            user-select: none;
+        }
+        .cat-pill small {
+            font-size: 0.66rem;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+        .cat-pill.active {
+            background: var(--primary) !important;
+            color: #fff !important;
+            border-color: var(--primary) !important;
+            box-shadow: 0 2px 6px rgba(27,54,93,0.25);
+        }
+        .cat-pill.active small {
+            color: #FEF3C7 !important;
+        }
+
+        .form-group { margin-bottom: 12px; }
+        .form-label {
+            display: block;
+            font-size: 0.83rem;
+            font-weight: 800;
+            margin-bottom: 6px;
+            color: var(--text);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #003366;
+            background: #E8F4F8;
+            border: 1.5px solid #94A3B8;
+            border-radius: 8px;
+            outline: none;
+        }
+        .form-control:focus { border-color: var(--primary); background: #fff; }
+
+        .date-type-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .dtype-btn {
+            padding: 11px 8px;
+            border: 2px solid var(--border);
+            border-radius: 9px;
+            background: #F8FAFC;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            font-weight: 800;
+            cursor: pointer;
+            text-align: center;
+            user-select: none;
+        }
+        .dtype-btn.active {
+            background: var(--secondary) !important;
+            color: #FFFFFF !important;
+            border-color: var(--secondary) !important;
+            box-shadow: 0 2px 6px rgba(14,98,81,0.25);
+        }
+
+        .nudge-bar {
+            display: flex;
+            gap: 5px;
+            margin-top: 6px;
+            flex-wrap: wrap;
+        }
+        .nudge-btn {
+            flex: 1;
+            padding: 7px 4px;
+            font-size: 0.74rem;
+            font-weight: 800;
+            background: #E2E8F0;
+            color: var(--text);
+            border: 1px solid #CBD5E1;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .nudge-btn:active {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .decision-banner {
+            border-radius: 12px;
+            padding: 15px 12px;
+            text-align: center;
+            margin-bottom: 14px;
+            border: 2.5px solid transparent;
+        }
+        .decision-banner.accept {
+            background: var(--success-bg);
+            border-color: var(--success-border);
+            color: var(--success-text);
+        }
+        .decision-banner.reject {
+            background: var(--danger-bg);
+            border-color: var(--danger-border);
+            color: var(--danger-text);
+        }
+        .decision-banner.warn {
+            background: var(--warn-bg);
+            border-color: var(--warn-border);
+            color: var(--warn-text);
+        }
+        .decision-main { font-size: 1.18rem; font-weight: 900; margin-bottom: 6px; }
+        .decision-detail { font-size: 0.85rem; font-weight: 700; line-height: 1.45; }
+        .half-life-strip {
+            margin-top: 10px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.88);
+            color: #0F172A;
+            font-size: 0.8rem;
+            font-weight: 800;
+            border: 1px dashed #64748B;
+        }
+
+        .dates-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .date-box {
+            background: #F8FAFC;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 9px 6px;
+            text-align: center;
+        }
+        .date-box.gold {
+            background: var(--highlight-bg);
+            border: 1.5px solid #F59E0B;
+        }
+        .date-box .lbl { font-size: 0.72rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; }
+        .date-box .val { font-size: 0.94rem; font-weight: 900; color: var(--text); }
+        .date-box.gold .val { color: var(--highlight-text); font-size: 1rem; }
+
+        .progress-wrap { margin-top: 10px; background: #E2E8F0; border-radius: 99px; height: 10px; overflow: hidden; }
+        .progress-bar { height: 100%; transition: width 0.2s; }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 9px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 10px;
+        }
+        .btn-save { background: var(--secondary); color: #fff; }
+        .btn-primary { background: var(--primary); color: #fff; }
+        .btn-danger { background: #DC2626; color: #fff; }
+        .btn-sm { padding: 5px 9px; font-size: 0.74rem; border-radius: 6px; border: none; cursor: pointer; font-weight: 800; }
+
+        .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px; }
+        .kpi-box { background: #F8FAFC; border: 1px solid var(--border); border-radius: 8px; padding: 8px 4px; text-align: center; }
+        .kpi-box .n { font-size: 1.05rem; font-weight: 900; display: block; }
+        .kpi-box .t { font-size: 0.68rem; font-weight: 700; color: var(--text-muted); }
+
+        .table-wrap { overflow-x: auto; }
+        table.data-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+        table.data-table th, table.data-table td { border: 1px solid var(--border); padding: 7px 5px; text-align: center; }
+        table.data-table th { background: var(--primary); color: #fff; font-weight: 800; }
+        table.data-table tr:nth-child(even) { background: #F8FAFC; }
+
+        .log-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-right: 5px solid var(--primary);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 9px;
+            font-size: 0.8rem;
+        }
+        .log-card.accept { border-right-color: #16A34A; }
+        .log-card.reject { border-right-color: #DC2626; }
+        .log-card-top { display: flex; justify-content: space-between; align-items: center; font-weight: 800; margin-bottom: 5px; }
+        .log-card-body { color: var(--text-muted); font-size: 0.75rem; line-height: 1.55; }
+
+        /* Tag list for managing Limit Types */
+        .limit-types-manager {
+            background: #F8FAFC;
+            border: 1.5px dashed #94A3B8;
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 8px;
+            margin-bottom: 12px;
+        }
+        .ltype-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 10px;
+        }
+        .ltype-tag {
+            background: #FFFFFF;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 5px 9px;
+            font-size: 0.76rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+        }
+        .ltype-tag button {
+            background: #FEE2E2;
+            color: #991B1B;
+            border: none;
+            border-radius: 4px;
+            padding: 1px 5px;
+            font-size: 0.7rem;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 650px;
+            margin: 0 auto;
+            background: #FFFFFF;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            border-top: 2px solid var(--border);
+            box-shadow: 0 -3px 12px rgba(0,0,0,0.08);
+            z-index: 999;
+        }
+        .bnav-lbl {
+            padding: 9px 4px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            user-select: none;
+        }
+        .bnav-icon { font-size: 1.15rem; }
+
+        #toast-msg {
+            position: fixed;
+            bottom: 75px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #0F172A;
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 99px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            z-index: 2000;
+            display: none;
+        }
+    </style>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1B365D">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="فاحص البضائع">
+</head>
+<body>
+
+<input type="radio" name="main_tab_nav" id="tab-radio-quick" class="nav-radio" checked>
+<input type="radio" name="main_tab_nav" id="tab-radio-log" class="nav-radio">
+<input type="radio" name="main_tab_nav" id="tab-radio-settings" class="nav-radio">
+
+<div id="toast-msg"></div>
+
+<header>
+    <h1>📦 منظومة فحص واستلام البضائع الاحترافية</h1>
+    <p>مراقبة شرط نصف المدة، إدارة الشروط وأنواع الحدود، وتاريخ الإنتاج أو الانتهاء</p>
+    <div class="top-tabs">
+        <label for="tab-radio-quick" class="top-tab-lbl" onclick="onTabChanged('quick')">⚡ الاستعلام السريع</label>
+        <label for="tab-radio-log" class="top-tab-lbl" onclick="onTabChanged('log')">📋 سجل اليوم <span class="badge-count" id="nav-log-count">0</span></label>
+        <label for="tab-radio-settings" class="top-tab-lbl" onclick="onTabChanged('settings')">⚙️ إدارة الشروط</label>
+    </div>
+</header>
+
+<div class="container">
+
+    <!-- ========================================== -->
+    <!-- TAB 1: QUICK INQUIRY & INSTANT CALCULATOR  -->
+    <!-- ========================================== -->
+    <div id="pane-quick" class="tab-pane">
+        <div class="card">
+            <div id="category-pills-container" style="display:none;"></div>
+            <div class="form-group" style="margin-top:2px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                    <label class="form-label" style="margin-bottom:0;">فئة الصلاحية / المعيار:</label>
+                    <span style="font-size:0.75rem; font-weight:800; color:var(--secondary);" id="active-rule-badge"></span>
+                </div>
+                <select id="q-category-select" class="form-control" onchange="onSelectCategoryDropdown(this.value)"></select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">نوع التاريخ المدون على العبوة:</label>
+                <div class="date-type-tabs">
+                    <div id="dtype-prod" class="dtype-btn active" onclick="setDateType('prod')">🏭 تاريخ الإنتاج فقط</div>
+                    <div id="dtype-exp" class="dtype-btn" onclick="setDateType('exp')">⏳ تاريخ الانتهاء فقط / يفضل الاستخدام خلال...</div>
+                </div>
+            </div>
+
+            <!-- Extra shelf-life selector when Product has ONLY Expiry Date and "Best Used Within..." -->
+            <div id="exp-only-helper-box" class="form-group" style="display:none; background:#FFFBEB; padding:10px; border-radius:8px; border:1px solid #F59E0B;">
+                <label class="form-label" style="color:#9A3412;">💡 للمنتجات المكتوب عليها «تاريخ انتهاء فقط» مع عبارة (يفضل الاستخدام خلال...):</label>
+                <select id="q-exp-duration-preset" class="form-control" onchange="onPresetDurationChange(this.value)" style="background:#FFFFFF;">
+                    <option value="rule">اعتماد مدة الصلاحية المسجلة في الشرط المختار أعلاه تلقائياً</option>
+                    <option value="90">3 شهور (90 يوم)</option>
+                    <option value="180">6 شهور (180 يوم)</option>
+                    <option value="270">9 شهور (270 يوم)</option>
+                    <option value="365">سنة (12 شهر)</option>
+                    <option value="540">18 شهر (سنة ونصف)</option>
+                    <option value="730">سنتين (24 شهر)</option>
+                    <option value="1095">3 سنوات (36 شهر)</option>
+                    <option value="1825">5 سنوات (60 شهر)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" id="lbl-product-date">تاريخ الإنتاج المدون على المنتج:</label>
+                <input type="date" id="q-product-date" class="form-control" onchange="runCalculation()" oninput="runCalculation()">
+                <div class="nudge-bar">
+                    <div class="nudge-btn" onclick="setRelativeDate(0)">اليوم</div>
+                    <div class="nudge-btn" onclick="setRelativeDate(-1)">أمس (-1)</div>
+                    <div class="nudge-btn" onclick="setRelativeDate(-3)">منذ 3 أيام</div>
+                    <div class="nudge-btn" onclick="setRelativeDate(-30)">منذ شهر</div>
+                    <div class="nudge-btn" onclick="setRelativeDate(-180)">منذ 6 شهور</div>
+                </div>
+            </div>
+
+            <div class="dates-grid">
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">تاريخ الاستلام الفعلي:</label>
+                    <input type="date" id="q-receive-date" class="form-control" onchange="runCalculation()">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">اسم الصنف / المورد (اختياري):</label>
+                    <input type="text" id="q-item-name" class="form-control" placeholder="مثال: لحوم مبردة / أرز / زيت">
+                </div>
+            </div>
+        </div>
+
+        <!-- Decision Banner -->
+        <div id="decision-banner" class="decision-banner accept">
+            <div class="decision-main" id="dec-title">✅ مقبول للاستلام</div>
+            <div class="decision-detail" id="dec-subtitle"></div>
+            <div class="half-life-strip" id="dec-halflife"></div>
+            <div class="progress-wrap">
+                <div id="dec-progress" class="progress-bar" style="width:20%; background:#16A34A;"></div>
+            </div>
+        </div>
+
+        <!-- Governing Dates Card -->
+        <div class="card">
+            <div class="card-header">
+                <span>📅 نتيجة الفحص والتواريخ الحاكمة (تاريخ نصف المدة وآخر استلام)</span>
+            </div>
+            <div class="dates-grid">
+                <div class="date-box gold">
+                    <div class="lbl">📅 تاريخ نصف المدة (50%)</div>
+                    <div class="val" id="res-half-date">-</div>
+                </div>
+                <div class="date-box gold">
+                    <div class="lbl">🛑 آخر تاريخ مسموح للاستلام (حد الرفض)</div>
+                    <div class="val" id="res-cutoff-date">-</div>
+                </div>
+                <div class="date-box">
+                    <div class="lbl">🏭 تاريخ الإنتاج المحسوب</div>
+                    <div class="val" id="res-prod-date">-</div>
+                </div>
+                <div class="date-box">
+                    <div class="lbl">⌛ تاريخ انتهاء الصلاحية النهائي</div>
+                    <div class="val" id="res-exp-date">-</div>
+                </div>
+                <div class="date-box">
+                    <div class="lbl">الأيام المنقضية حتى الاستلام</div>
+                    <div class="val" id="res-elapsed-days">-</div>
+                </div>
+                <div class="date-box">
+                    <div class="lbl">نوع وقيمة حد الشرط</div>
+                    <div class="val" id="res-limit-val">-</div>
+                </div>
+                <div class="date-box">
+                    <div class="lbl">إجمالي الصلاحية / نصفها</div>
+                    <div class="val" id="res-total-half">-</div>
+                </div>
+                <div class="date-box">
+                    <div class="lbl">نسبة الصلاحية المستهلكة</div>
+                    <div class="val" id="res-pct">-</div>
+                </div>
+            </div>
+
+            <div id="res-rule-note" style="margin-top:10px; padding:8px; background:#F1F5F9; border-radius:6px; font-size:0.78rem; font-weight:700; text-align:center; color:var(--primary);"></div>
+
+            <button type="button" class="btn btn-save" onclick="saveInspectionToLog()">
+                💾 تسجيل هذا الفحص في «سجل استلام اليوم»
+            </button>
+        </div>
+
+        <!-- Quick Daily Reference Guide -->
+        <div class="card">
+            <div class="card-header">
+                <span>📌 جدول مرجع اليوم السريع (أقدم تاريخ إنتاج يُقبل اليوم وتاريخ نصف المدة)</span>
+            </div>
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>فئة الصلاحية / الشرط</th>
+                            <th>إجمالي الصلاحية</th>
+                            <th>مهلة الاستلام</th>
+                            <th>أقدم تاريخ إنتاج يُقبل اليوم</th>
+                        </tr>
+                    </thead>
+                    <tbody id="quick-ref-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: DAILY LOG & REPORTS ENGINE          -->
+    <!-- ========================================== -->
+    <div id="pane-log" class="tab-pane">
+        <!-- Direct Add inside Log Tab -->
+        <div class="card">
+            <div class="card-header">
+                <span>➕ إضافة سريعة مباشرة إلى سجل الاستلام</span>
+            </div>
+            <div class="dates-grid">
+                <div class="form-group">
+                    <label class="form-label">اسم الصنف / البضاعة:</label>
+                    <input type="text" id="log-add-name" class="form-control" placeholder="مثال: أرز / زيت / دواجن">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">اسم المورد / الشركة:</label>
+                    <input type="text" id="log-add-supplier" class="form-control" placeholder="مثال: شركة التوريدات">
+                </div>
+            </div>
+            <div class="dates-grid">
+                <div class="form-group">
+                    <label class="form-label">فئة الصلاحية / الشرط:</label>
+                    <select id="log-add-cat" class="form-control"></select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">تاريخ الإنتاج المدون على المنتج:</label>
+                    <input type="date" id="log-add-pdate" class="form-control">
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="directAddFromLogTab()">
+                ✅ فحص وإضافة فورية إلى السجل
+            </button>
+        </div>
+
+        <!-- Reports & Filtering Control Panel (Daily / Monthly / Yearly) -->
+        <div class="card" style="border: 2px solid var(--primary);">
+            <div class="card-header">
+                <span>📊 استخراج التقارير (يومي / شهري / سنوي)</span>
+                <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                    <button type="button" class="btn-sm" style="background:var(--secondary); color:#fff;" onclick="exportLogToCSV()">📥 تصدير التقرير للإكسيل (.xls)</button>
+                    <button type="button" class="btn-sm" style="background:#64748B; color:#fff;" onclick="loadSampleLogs()">بيانات تجريبية</button>
+                </div>
+            </div>
+
+            <!-- Report Period Type Selector -->
+            <div class="form-group">
+                <label class="form-label">1️⃣ اختر نوع التقرير الزمني:</label>
+                <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:6px;">
+                    <div id="rep-btn-daily" class="dtype-btn active" style="padding:8px 4px; font-size:0.78rem;" onclick="setReportMode('daily')">📅 تقرير يومي</div>
+                    <div id="rep-btn-monthly" class="dtype-btn" style="padding:8px 4px; font-size:0.78rem;" onclick="setReportMode('monthly')">🗓️ تقرير شهري</div>
+                    <div id="rep-btn-yearly" class="dtype-btn" style="padding:8px 4px; font-size:0.78rem;" onclick="setReportMode('yearly')">📆 تقرير سنوي</div>
+                    <div id="rep-btn-all" class="dtype-btn" style="padding:8px 4px; font-size:0.78rem;" onclick="setReportMode('all')">🌐 شامل الكل</div>
+                </div>
+            </div>
+
+            <!-- Dynamic Period Pickers -->
+            <div id="rep-picker-daily" class="form-group">
+                <label class="form-label">اختر اليوم المطلوب عرض تقريره:</label>
+                <input type="date" id="rep-date-input" class="form-control" onchange="renderDailyLog()">
+            </div>
+
+            <div id="rep-picker-monthly" class="form-group" style="display:none;">
+                <label class="form-label">اختر الشهر والسنة للتقرير الشهري:</label>
+                <input type="month" id="rep-month-input" class="form-control" onchange="renderDailyLog()">
+            </div>
+
+            <div id="rep-picker-yearly" class="form-group" style="display:none;">
+                <label class="form-label">اختر السنة للتقرير السنوي:</label>
+                <select id="rep-year-input" class="form-control" onchange="renderDailyLog()"></select>
+            </div>
+
+            <!-- Product & Status Filter -->
+            <div class="dates-grid" style="margin-bottom:10px;">
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">بحث باسم المنتج أو المورد أو الفئة:</label>
+                    <input type="text" id="rep-search-item" class="form-control" placeholder="اكتب اسم المنتج للفرز..." oninput="renderDailyLog()">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">حالة القبول / الرفض:</label>
+                    <select id="rep-status-filter" class="form-control" onchange="renderDailyLog()">
+                        <option value="all">الكل (المقبول والمرفوض)</option>
+                        <option value="accept">✅ المقبول فقط</option>
+                        <option value="reject">❌ المرفوض فقط</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="rep-active-title" style="background:#EFF6FF; color:var(--primary); padding:8px 10px; border-radius:8px; font-size:0.8rem; font-weight:800; text-align:center; margin-bottom:10px; border:1px solid #BFDBFE;"></div>
+
+            <!-- KPIs for Selected Report Period -->
+            <div class="kpi-grid">
+                <div class="kpi-box"><span class="n" id="kpi-tot">0</span><span class="t">إجمالي الفحص</span></div>
+                <div class="kpi-box" style="background:var(--success-bg); color:var(--success-text);"><span class="n" id="kpi-acc">0</span><span class="t">مقبول ✅</span></div>
+                <div class="kpi-box" style="background:var(--danger-bg); color:var(--danger-text);"><span class="n" id="kpi-rej">0</span><span class="t">مرفوض ❌</span></div>
+                <div class="kpi-box" style="background:var(--highlight-bg); color:var(--highlight-text);"><span class="n" id="kpi-rate">0%</span><span class="t">نسبة القبول</span></div>
+            </div>
+
+            <!-- Summary Table by Product / Category for the Selected Period -->
+            <div id="rep-summary-wrap" style="margin-bottom:14px; display:none;">
+                <div style="font-size:0.82rem; font-weight:800; color:var(--primary); margin-bottom:6px;">📌 ملخص الأصناف المسجلة خلال فترة التقرير:</div>
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>الصنف / المنتج</th>
+                                <th>عدد مرات الفحص</th>
+                                <th>مقبول ✅</th>
+                                <th>مرفوض ❌</th>
+                                <th>نسبة القبول</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rep-summary-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div style="font-size:0.82rem; font-weight:800; color:var(--primary); margin-bottom:8px;">📋 تفاصيل الشحنات المسجلة في التقرير:</div>
+            <div id="daily-log-container"></div>
+
+            <button type="button" class="btn btn-danger" onclick="clearAllLogs()" style="margin-top:10px;">🗑️ مسح السجل بالكامل</button>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: SETTINGS & RULES (إدارة الشروط)     -->
+    <!-- ========================================== -->
+    <div id="pane-settings" class="tab-pane">
+
+        <!-- Card A: Add / Edit Rule Form -->
+        <div class="card">
+            <div class="card-header">
+                <span id="form-rule-title">⚙️ إضافة وتعديل شروط الاستلام الاحترافية</span>
+            </div>
+            <input type="hidden" id="edit-rule-index" value="-1">
+
+            <div class="form-group">
+                <label class="form-label">فئة الصلاحية / اسم الشرط:</label>
+                <input type="text" id="cfg-name" class="form-control" placeholder="مثال: 3 شهور (90 يوم) أو المنتج صلاحيته أقل من أو يساوي 14 يوم">
+            </div>
+
+            <div class="dates-grid">
+                <div class="form-group">
+                    <label class="form-label">مدة الصلاحية:</label>
+                    <input type="number" id="cfg-tot-val" class="form-control" placeholder="مثال: 90" oninput="onConfigTotalChange()">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">الوحدة:</label>
+                    <select id="cfg-tot-unit" class="form-control" onchange="onConfigTotalChange()">
+                        <option value="days">أيام</option>
+                        <option value="months">شهور</option>
+                        <option value="years">سنوات</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="dates-grid">
+                <div class="form-group">
+                    <label class="form-label">
+                        <span>نوع الحد (المقارنة):</span>
+                        <button type="button" class="btn-sm" style="background:#E0F2FE; color:#0369A1; padding:2px 7px; font-size:0.7rem;" onclick="toggleLimitTypeManager()">+ إدارة أنواع الحد</button>
+                    </label>
+                    <select id="cfg-limit-type" class="form-control" onchange="onLimitTypeSelectChange()"></select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">قيمة الحد المسموح للاستلام:</label>
+                    <input type="number" id="cfg-limit-val" class="form-control" placeholder="مثال: 45">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">وحدة قيمة الحد:</label>
+                <select id="cfg-limit-unit" class="form-control">
+                    <option value="days">أيام</option>
+                    <option value="months">شهور</option>
+                    <option value="years">سنوات</option>
+                </select>
+            </div>
+
+            <!-- Dynamic Manager for "نوع الحد (المقارنة)" (Add / Remove Custom Limit Types) -->
+            <div id="limit-types-manager-box" class="limit-types-manager" style="display:none;">
+                <div style="font-size:0.84rem; font-weight:800; color:var(--primary); margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                    <span>🛠️ التحكم في قائمة «نوع الحد (المقارنة)» (إضافة / إزالة حسب متطلبات العمل)</span>
+                    <button type="button" class="btn-sm" style="background:#CBD5E1; color:#0F172A;" onclick="toggleLimitTypeManager()">إغلاق ✕</button>
+                </div>
+                <div class="dates-grid">
+                    <div class="form-group" style="margin-bottom:6px;">
+                        <label class="form-label" style="font-size:0.75rem;">مسمى نوع الحد الجديد:</label>
+                        <input type="text" id="new-ltype-label" class="form-control" placeholder="مثال: 3 شهور (90 يوم) أو لا يتعدى ثلث المدة">
+                    </div>
+                    <div class="form-group" style="margin-bottom:6px;">
+                        <label class="form-label" style="font-size:0.75rem;">طريقة المقارنة الرياضية:</label>
+                        <select id="new-ltype-op" class="form-control">
+                            <option value="lte">أقل من أو يساوي (&lt;=)</option>
+                            <option value="lt">أقل من (&lt;)</option>
+                            <option value="gte">أكبر من أو يساوي (&gt;=)</option>
+                            <option value="gt">أكبر من (&gt;)</option>
+                            <option value="half">نصف المدة تلقائياً (50%)</option>
+                            <option value="between">بين فترتين</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="dates-grid">
+                    <div class="form-group" style="margin-bottom:6px;">
+                        <label class="form-label" style="font-size:0.75rem;">أيام الصلاحية المرتبطة (اختياري للتعبئة التلقائية):</label>
+                        <input type="number" id="new-ltype-totdays" class="form-control" placeholder="مثال: 90 (اختياري)">
+                    </div>
+                    <div class="form-group" style="margin-bottom:6px;">
+                        <label class="form-label" style="font-size:0.75rem;">قيمة الحد التلقائية باليوم (اختياري):</label>
+                        <input type="number" id="new-ltype-limdays" class="form-control" placeholder="مثال: 30 أو 45 (اختياري)">
+                    </div>
+                </div>
+                <div style="display:flex; gap:6px;">
+                    <button type="button" class="btn btn-primary" style="margin-top:4px; padding:9px;" onclick="addNewLimitType()">➕ إضافة إلى قائمة «نوع الحد»</button>
+                    <button type="button" class="btn" style="margin-top:4px; padding:9px; background:#475569; color:#fff; width:auto; white-space:nowrap;" onclick="restoreDefaultLimitTypes()">استعادة الافتراضي</button>
+                </div>
+
+                <div style="margin-top:10px; font-size:0.76rem; font-weight:800; color:var(--text-muted);">المسميات الحالية في قائمة «نوع الحد» (اضغط ✕ للإزالة):</div>
+                <div id="limit-types-tags-list" class="ltype-tags"></div>
+            </div>
+
+            <div style="display:flex; gap:8px;">
+                <button type="button" class="btn btn-save" id="btn-save-rule" onclick="saveRuleConfig()" style="flex:2;">➕ حفظ وتحديث الشرط في النظام</button>
+                <button type="button" class="btn" id="btn-cancel-edit" onclick="resetRuleForm()" style="flex:1; background:#CBD5E1; color:#0F172A; display:none;">إلغاء التعديل</button>
+            </div>
+        </div>
+
+        <!-- Card B: Quick Direct Access to Manage Limit Types -->
+        <div class="card">
+            <div class="card-header">
+                <span>🗂️ التحكم السريع في مسميات «نوع الحد (المقارنة)»</span>
+                <button type="button" class="btn-sm" style="background:var(--primary); color:#fff;" onclick="toggleLimitTypeManager()">فتح نافذة الإضافة والحذف ⚙️</button>
+            </div>
+            <p style="font-size:0.76rem; color:var(--text-muted); line-height:1.5;">
+                تمت إضافة المسميات: <b>3 شهور (90 يوم)</b>، <b>6 شهور (180 يوم)</b>، <b>سنة (12 شهر)</b>، <b>سنتين (24 شهر)</b>، <b>3 سنوات (36 شهر)</b>، <b>5 سنوات (60 شهر)</b> بجانب علامات المقارنة (أقل من أو يساوي، أكبر من أو يساوي، نصف المدة...) مع إمكانية إضافة أو حذف أي مسمى في أي وقت.
+            </p>
+        </div>
+
+        <!-- Card C: Master Rules Table -->
+        <div class="card">
+            <div class="card-header">
+                <span>📌 جدول الشروط والمعايير الاحترافية المفعلة (<span id="rules-count-badge">0</span> شرط)</span>
+                <button type="button" class="btn-sm" style="background:#475569; color:#fff;" onclick="restoreDefaultRules()">🔄 استعادة كافة المعايير الأصلية</button>
+            </div>
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>فئة الصلاحية / اسم الشرط</th>
+                            <th>إجمالي الصلاحية</th>
+                            <th>نصف المدة (50%)</th>
+                            <th>نوع الحد والشرط المسموح</th>
+                            <th>تحكم</th>
+                        </tr>
+                    </thead>
+                    <tbody id="settings-rules-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<nav class="bottom-nav">
+    <label for="tab-radio-quick" class="bnav-lbl" onclick="onTabChanged('quick')">
+        <span class="bnav-icon">⚡</span>
+        <span>الاستعلام السريع</span>
+    </label>
+    <label for="tab-radio-log" class="bnav-lbl" onclick="onTabChanged('log')">
+        <span class="bnav-icon">📋</span>
+        <span>سجل اليوم</span>
+    </label>
+    <label for="tab-radio-settings" class="bnav-lbl" onclick="onTabChanged('settings')">
+        <span class="bnav-icon">⚙️</span>
+        <span>إدارة الشروط</span>
+    </label>
+</nav>
+
+<script>
+    // 1. القائمة الافتراضية لأنواع الحدود (المقارنة) شاملاً العلامات الرياضية + المسميات الـ 6 المطلوبة في الصورة
+    const DEFAULT_LIMIT_TYPES = [
+        { code: "lte", label: "أقل من أو يساوي (<=)", op: "lte", autoTotalDays: 0, autoLimitDays: 0 },
+        { code: "lt", label: "أقل من (<)", op: "lt", autoTotalDays: 0, autoLimitDays: 0 },
+        { code: "gte", label: "أكبر من أو يساوي (>=)", op: "gte", autoTotalDays: 0, autoLimitDays: 0 },
+        { code: "gt", label: "أكبر من (>)", op: "gt", autoTotalDays: 0, autoLimitDays: 0 },
+        { code: "half", label: "نصف المدة (50% تلقائياً)", op: "half", autoTotalDays: 0, autoLimitDays: 0 },
+        { code: "between", label: "بين فترتين", op: "between", autoTotalDays: 0, autoLimitDays: 0 },
+        { code: "m3_90", label: "3 شهور (90 يوم)", op: "lte", autoTotalDays: 90, autoLimitDays: 30 },
+        { code: "m6_180", label: "6 شهور (180 يوم)", op: "lte", autoTotalDays: 180, autoLimitDays: 90 },
+        { code: "y1_12m", label: "سنة (12 شهر)", op: "lte", autoTotalDays: 365, autoLimitDays: 182 },
+        { code: "y2_24m", label: "سنتين (24 شهر)", op: "lte", autoTotalDays: 730, autoLimitDays: 365 },
+        { code: "y3_36m", label: "3 سنوات (36 شهر)", op: "lte", autoTotalDays: 1095, autoLimitDays: 547 },
+        { code: "y5_60m", label: "5 سنوات (60 شهر)", op: "lte", autoTotalDays: 1825, autoLimitDays: 912 }
+    ];
+
+    // 2. القائمة الكاملة لجميع الشروط والفئات السابقة والحالية بدون حذف أي بيان
+    const INITIAL_RULES = [
+        // المسميات الـ 6 الأساسية + فئات العيش والفريش
+        { id: 101, name: "3 أيام (عيش طازج ومخبوزات يومية)", totVal: 3, totUnit: "days", limitType: "lte", limitVal: 1, limitUnit: "days" },
+        { id: 102, name: "7 أيام (فريش ومخبوزات قصيرة الأجل)", totVal: 7, totUnit: "days", limitType: "lte", limitVal: 2, limitUnit: "days" },
+        { id: 103, name: "3 شهور (90 يوم)", totVal: 90, totUnit: "days", limitType: "m3_90", limitVal: 30, limitUnit: "days" },
+        { id: 104, name: "6 شهور (180 يوم)", totVal: 180, totUnit: "days", limitType: "m6_180", limitVal: 90, limitUnit: "days" },
+        { id: 105, name: "سنة (12 شهر)", totVal: 365, totUnit: "days", limitType: "y1_12m", limitVal: 182, limitUnit: "days" },
+        { id: 106, name: "سنتين (24 شهر)", totVal: 730, totUnit: "days", limitType: "y2_24m", limitVal: 365, limitUnit: "days" },
+        { id: 107, name: "3 سنوات (36 شهر)", totVal: 1095, totUnit: "days", limitType: "y3_36m", limitVal: 547, limitUnit: "days" },
+        { id: 108, name: "5 سنوات (60 شهر)", totVal: 1825, totUnit: "days", limitType: "y5_60m", limitVal: 912, limitUnit: "days" },
+
+        // المعايير التفصيلية الـ 12 المضافة لإدارة الشروط
+        { id: 1, name: "المنتج صلاحيته أقل من أو يساوي 5 أيام", totVal: 5, totUnit: "days", limitType: "lte", limitVal: 1, limitUnit: "days" },
+        { id: 2, name: "المنتج صلاحيته أقل من أو يساوي 14 يوم", totVal: 14, totUnit: "days", limitType: "lte", limitVal: 3, limitUnit: "days" },
+        { id: 3, name: "المنتج صلاحيته أو يساوي شهر (30 يوم)", totVal: 30, totUnit: "days", limitType: "lte", limitVal: 7, limitUnit: "days" },
+        { id: 4, name: "صلاحية المنتج أكبر من شهر", totVal: 30, totUnit: "days", limitType: "gt", limitVal: 7, limitUnit: "days" },
+        { id: 5, name: "المنتج صلاحيته أقل من أو يساوي 6 شهور", totVal: 180, totUnit: "days", limitType: "lte", limitVal: 90, limitUnit: "days" },
+        { id: 6, name: "المنتج صلاحيته أكبر من 6 شهور وأقل من أو يساوي 9 شهور", totVal: 270, totUnit: "days", limitType: "lte", limitVal: 120, limitUnit: "days" },
+        { id: 7, name: "المنتج صلاحيته أكبر من 9 شهور وأقل من أو يساوي 12 شهر", totVal: 365, totUnit: "days", limitType: "lte", limitVal: 182, limitUnit: "days" },
+        { id: 8, name: "المنتج صلاحيته أكبر من 12 شهر وأقل من أو يساوي 18 شهر", totVal: 540, totUnit: "days", limitType: "lte", limitVal: 270, limitUnit: "days" },
+        { id: 9, name: "المنتج صلاحيته أكبر من 18 شهر", totVal: 730, totUnit: "days", limitType: "lte", limitVal: 365, limitUnit: "days" },
+        { id: 10, name: "منتجات الدواجن/اللحوم المصنعة الخاصة بالموردين", totVal: 30, totUnit: "days", limitType: "lte", limitVal: 5, limitUnit: "days" },
+        { id: 11, name: "اللحوم المعبأة تحت تفريغ الهواء ذو الصلاحية 98 يوماً توريد مباشر", totVal: 98, totUnit: "days", limitType: "lte", limitVal: 49, limitUnit: "days" },
+        { id: 12, name: "اللحوم المعبأة تحت تفريغ الهواء ذو الصلاحية 49 يوماً توريد مباشر", totVal: 49, totUnit: "days", limitType: "lte", limitVal: 24, limitUnit: "days" }
+    ];
+
+    let limitTypes = JSON.parse(JSON.stringify(DEFAULT_LIMIT_TYPES));
+    let rules = JSON.parse(JSON.stringify(INITIAL_RULES));
+    let dailyLogs = [];
+    let selectedRuleIndex = 4; // Default: سنة (12 شهر)
+    let activeDateType = 'prod';
+    let currentResult = null;
+
+    function showToast(msg) {
+        var t = document.getElementById('toast-msg');
+        if (!t) return;
+        t.innerText = msg;
+        t.style.display = 'block';
+        setTimeout(function() { t.style.display = 'none'; }, 2600);
+    }
+
+    function unitLabelAr(unit) {
+        if (unit === 'months') return 'شهر';
+        if (unit === 'years') return 'سنة';
+        return 'يوم';
+    }
+
+    function toDays(val, unit) {
+        var v = Number(val) || 0;
+        if (unit === 'months') return Math.round(v * 30);
+        if (unit === 'years') return Math.round(v * 365);
+        return v;
+    }
+
+    function toISODate(d) {
+        var y = d.getFullYear();
+        var m = String(d.getMonth() + 1).padStart(2, '0');
+        var day = String(d.getDate()).padStart(2, '0');
+        return y + '-' + m + '-' + day;
+    }
+
+    function addDaysToISO(isoStr, days) {
+        if (!isoStr) return '';
+        var p = isoStr.split('-');
+        var dt = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
+        dt.setDate(dt.getDate() + Number(days));
+        return toISODate(dt);
+    }
+
+    function diffDaysISO(isoA, isoB) {
+        var pA = isoA.split('-');
+        var pB = isoB.split('-');
+        var dA = new Date(Number(pA[0]), Number(pA[1]) - 1, Number(pA[2]));
+        var dB = new Date(Number(pB[0]), Number(pB[1]) - 1, Number(pB[2]));
+        return Math.round((dA - dB) / 86400000);
+    }
+
+    function onTabChanged() {
+        window.scrollTo(0, 0);
+    }
+
+    function getLimitTypeObj(code) {
+        for (var i = 0; i < limitTypes.length; i++) {
+            if (limitTypes[i].code === code) return limitTypes[i];
+        }
+        return { code: code, label: code, op: "lte", autoTotalDays: 0, autoLimitDays: 0 };
+    }
+
+    function loadData() {
+        try {
+            var lt = localStorage.getItem('pro_limit_types_v5');
+            if (lt) limitTypes = JSON.parse(lt);
+        } catch (e) {}
+        try {
+            var r = localStorage.getItem('pro_shelf_rules_v5');
+            if (r) rules = JSON.parse(r);
+        } catch (e) {}
+        try {
+            var l = localStorage.getItem('pro_daily_logs_v5');
+            if (l) {
+                dailyLogs = JSON.parse(l);
+            } else {
+                seedSampleLogs();
+            }
+        } catch (e) {
+            seedSampleLogs();
+        }
+    }
+
+    function saveData() {
+        try {
+            localStorage.setItem('pro_limit_types_v5', JSON.stringify(limitTypes));
+            localStorage.setItem('pro_shelf_rules_v5', JSON.stringify(rules));
+            localStorage.setItem('pro_daily_logs_v5', JSON.stringify(dailyLogs));
+        } catch (e) {}
+    }
+
+    var reportMode = 'all';
+
+    function seedSampleLogs() {
+        var today = toISODate(new Date());
+        var prevMonthDay = addDaysToISO(today, -32);
+        dailyLogs = [
+            {
+                id: 1,
+                recDate: today,
+                prodName: "أرز أبيض مصري 5 كجم (مضارب الأرز)",
+                ruleName: "سنة (12 شهر)",
+                prodDate: addDaysToISO(today, -110),
+                halfDate: addDaysToISO(today, 72),
+                cutoffDate: addDaysToISO(today, 72),
+                expDate: addDaysToISO(today, 255),
+                elapsed: 110,
+                status: "accept",
+                decisionText: "✅ مقبول للاستلام"
+            },
+            {
+                id: 2,
+                recDate: today,
+                prodName: "لبن مبرد كامل الدسم (مزارع الخير)",
+                ruleName: "المنتج صلاحيته أقل من أو يساوي 14 يوم",
+                prodDate: addDaysToISO(today, -2),
+                halfDate: addDaysToISO(today, 5),
+                cutoffDate: addDaysToISO(today, 1),
+                expDate: addDaysToISO(today, 12),
+                elapsed: 2,
+                status: "accept",
+                decisionText: "✅ مقبول للاستلام"
+            },
+            {
+                id: 3,
+                recDate: today,
+                prodName: "لحوم مبردة تفريغ هواء (توريد مباشر)",
+                ruleName: "اللحوم المعبأة تحت تفريغ الهواء ذو الصلاحية 98 يوماً توريد مباشر",
+                prodDate: addDaysToISO(today, -55),
+                halfDate: addDaysToISO(today, -6),
+                cutoffDate: addDaysToISO(today, -6),
+                expDate: addDaysToISO(today, 43),
+                elapsed: 55,
+                status: "reject",
+                decisionText: "❌ مرفوض (تعدى الشرط)"
+            },
+            {
+                id: 4,
+                recDate: prevMonthDay,
+                prodName: "زيت عباد الشمس 2 لتر (شركة الزيوت)",
+                ruleName: "سنتين (24 شهر)",
+                prodDate: addDaysToISO(prevMonthDay, -200),
+                halfDate: addDaysToISO(prevMonthDay, 165),
+                cutoffDate: addDaysToISO(prevMonthDay, 165),
+                expDate: addDaysToISO(prevMonthDay, 530),
+                elapsed: 200,
+                status: "accept",
+                decisionText: "✅ مقبول للاستلام"
+            }
+        ];
+        saveData();
+    }
+
+    // Render Limit Types Dropdown & Tags
+    function renderLimitTypesUI() {
+        var sel = document.getElementById('cfg-limit-type');
+        var currentVal = sel.value;
+        sel.innerHTML = '';
+        for (var i = 0; i < limitTypes.length; i++) {
+            var lt = limitTypes[i];
+            var opt = document.createElement('option');
+            opt.value = lt.code;
+            opt.textContent = lt.label;
+            sel.appendChild(opt);
+        }
+        if (currentVal && limitTypes.some(function(x){ return x.code === currentVal; })) {
+            sel.value = currentVal;
+        }
+
+        var tagsContainer = document.getElementById('limit-types-tags-list');
+        tagsContainer.innerHTML = '';
+        for (var j = 0; j < limitTypes.length; j++) {
+            var item = limitTypes[j];
+            var span = document.createElement('span');
+            span.className = 'ltype-tag';
+            span.innerHTML = '<span>' + item.label + '</span>' +
+                '<button type="button" title="حذف هذا النوع" onclick="deleteLimitType(' + j + ')">✕</button>';
+            tagsContainer.appendChild(span);
+        }
+    }
+
+    function toggleLimitTypeManager() {
+        var box = document.getElementById('limit-types-manager-box');
+        box.style.display = (box.style.display === 'none') ? 'block' : 'none';
+    }
+
+    function onConfigTotalChange() {
+        var totVal = Number(document.getElementById('cfg-tot-val').value) || 0;
+        var totUnit = document.getElementById('cfg-tot-unit').value;
+        var lTypeCode = document.getElementById('cfg-limit-type').value;
+        var ltObj = getLimitTypeObj(lTypeCode);
+        if (ltObj && ltObj.op === 'half' && totVal > 0) {
+            var totalD = toDays(totVal, totUnit);
+            document.getElementById('cfg-limit-val').value = Math.floor(totalD / 2);
+            document.getElementById('cfg-limit-unit').value = 'days';
+        }
+    }
+
+    function onLimitTypeSelectChange() {
+        var code = document.getElementById('cfg-limit-type').value;
+        var lt = getLimitTypeObj(code);
+        if (!lt) return;
+
+        // If user selected one of the preset shelf-life limit types (e.g., 3 شهور (90 يوم), 6 شهور (180 يوم), سنة (12 شهر)...)
+        if (lt.autoTotalDays > 0) {
+            if (!document.getElementById('cfg-name').value.trim()) {
+                document.getElementById('cfg-name').value = lt.label;
+            }
+            document.getElementById('cfg-tot-val').value = lt.autoTotalDays;
+            document.getElementById('cfg-tot-unit').value = 'days';
+            document.getElementById('cfg-limit-val').value = lt.autoLimitDays;
+            document.getElementById('cfg-limit-unit').value = 'days';
+        } else if (lt.op === 'half') {
+            onConfigTotalChange();
+        }
+    }
+
+    function addNewLimitType() {
+        var lbl = document.getElementById('new-ltype-label').value.trim();
+        var op = document.getElementById('new-ltype-op').value;
+        var autoTot = Number(document.getElementById('new-ltype-totdays').value) || 0;
+        var autoLim = Number(document.getElementById('new-ltype-limdays').value) || 0;
+
+        if (!lbl) {
+            alert('يرجى كتابة مسمى نوع الحد الجديد (مثال: 4 شهور (120 يوم) أو أقل من أو يساوي ثلث المدة).');
+            return;
+        }
+
+        var newCode = 'custom_' + Date.now();
+        limitTypes.push({
+            code: newCode,
+            label: lbl,
+            op: op,
+            autoTotalDays: autoTot,
+            autoLimitDays: autoLim
+        });
+
+        saveData();
+        renderLimitTypesUI();
+        document.getElementById('cfg-limit-type').value = newCode;
+        onLimitTypeSelectChange();
+
+        document.getElementById('new-ltype-label').value = '';
+        document.getElementById('new-ltype-totdays').value = '';
+        document.getElementById('new-ltype-limdays').value = '';
+        showToast('✅ تمت إضافة "' + lbl + '" إلى قائمة نوع الحد!');
+    }
+
+    function deleteLimitType(idx) {
+        if (limitTypes.length <= 1) {
+            alert('يجب الإبقاء على نوع حد واحد على الأقل.');
+            return;
+        }
+        var target = limitTypes[idx];
+        if (confirm('هل تريد إزالة "' + target.label + '" من قائمة نوع الحد؟')) {
+            limitTypes.splice(idx, 1);
+            saveData();
+            renderLimitTypesUI();
+            renderSettingsTable();
+            showToast('🗑️ تم حذف نوع الحد من القائمة');
+        }
+    }
+
+    function restoreDefaultLimitTypes() {
+        if (confirm('استعادة القائمة الافتراضية لأنواع الحدود؟')) {
+            limitTypes = JSON.parse(JSON.stringify(DEFAULT_LIMIT_TYPES));
+            saveData();
+            renderLimitTypesUI();
+            renderSettingsTable();
+            showToast('🔄 تمت استعادة أنواع الحدود الافتراضية');
+        }
+    }
+
+    // Render Category Pills + Dropdowns
+    function renderCategoryDropdown() {
+        if (selectedRuleIndex >= rules.length) selectedRuleIndex = 0;
+
+        // 1. Pills Grid
+        var pillsContainer = document.getElementById('category-pills-container');
+        pillsContainer.innerHTML = '';
+        for (var p = 0; p < rules.length; p++) {
+            var rp = rules[p];
+            var pill = document.createElement('div');
+            pill.className = 'cat-pill' + (p === selectedRuleIndex ? ' active' : '');
+            pill.innerHTML = '<span>' + rp.name + '</span><small>الحد: ' + rp.limitVal + ' ' + unitLabelAr(rp.limitUnit) + '</small>';
+            pill.setAttribute('onclick', 'selectCategoryByIndex(' + p + ')');
+            pillsContainer.appendChild(pill);
+        }
+
+        // 2. Main Dropdown in Quick Tab
+        var sel = document.getElementById('q-category-select');
+        sel.innerHTML = '';
+        for (var i = 0; i < rules.length; i++) {
+            var r = rules[i];
+            var opt = document.createElement('option');
+            opt.value = i;
+            opt.textContent = r.name + ' — [الصلاحية: ' + r.totVal + ' ' + unitLabelAr(r.totUnit) + ' | الحد: ' + r.limitVal + ' ' + unitLabelAr(r.limitUnit) + ']';
+            sel.appendChild(opt);
+        }
+        sel.value = selectedRuleIndex;
+
+        // 3. Log Tab Dropdown
+        var logSel = document.getElementById('log-add-cat');
+        logSel.innerHTML = '';
+        for (var k = 0; k < rules.length; k++) {
+            var rk = rules[k];
+            var opt2 = document.createElement('option');
+            opt2.value = k;
+            opt2.textContent = rk.name;
+            logSel.appendChild(opt2);
+        }
+        logSel.value = selectedRuleIndex;
+    }
+
+    function selectCategoryByIndex(idx) {
+        selectedRuleIndex = Number(idx);
+        document.getElementById('q-exp-duration-preset').value = 'rule';
+        renderCategoryDropdown();
+        runCalculation();
+    }
+
+    function onSelectCategoryDropdown(val) {
+        selectedRuleIndex = Number(val);
+        document.getElementById('q-exp-duration-preset').value = 'rule';
+        renderCategoryDropdown();
+        runCalculation();
+    }
+
+    function setDateType(type) {
+        var rule = rules[selectedRuleIndex];
+        var currentInputDate = document.getElementById('q-product-date').value;
+        var totalDays = getEffectiveTotalDays(rule);
+
+        if (currentInputDate && rule && activeDateType !== type) {
+            if (type === 'exp') {
+                document.getElementById('q-product-date').value = addDaysToISO(currentInputDate, totalDays);
+            } else {
+                document.getElementById('q-product-date').value = addDaysToISO(currentInputDate, -totalDays);
+            }
+        }
+
+        activeDateType = type;
+        document.getElementById('dtype-prod').className = 'dtype-btn' + (type === 'prod' ? ' active' : '');
+        document.getElementById('dtype-exp').className = 'dtype-btn' + (type === 'exp' ? ' active' : '');
+
+        document.getElementById('exp-only-helper-box').style.display = (type === 'exp') ? 'block' : 'none';
+
+        document.getElementById('lbl-product-date').innerText = (type === 'prod')
+            ? 'تاريخ الإنتاج المدون على المنتج:'
+            : 'تاريخ الانتهاء المدون على المنتج:';
+        runCalculation();
+    }
+
+    function onPresetDurationChange() {
+        runCalculation();
+    }
+
+    function getEffectiveTotalDays(rule) {
+        if (!rule) return 365;
+        if (activeDateType === 'exp') {
+            var preset = document.getElementById('q-exp-duration-preset').value;
+            if (preset !== 'rule' && Number(preset) > 0) {
+                return Number(preset);
+            }
+        }
+        return toDays(rule.totVal, rule.totUnit);
+    }
+
+    function setRelativeDate(offsetDays) {
+        var recDate = document.getElementById('q-receive-date').value || toISODate(new Date());
+        var rule = rules[selectedRuleIndex];
+        var totalDays = getEffectiveTotalDays(rule);
+        var targetProdDate = addDaysToISO(recDate, offsetDays);
+
+        if (activeDateType === 'prod') {
+            document.getElementById('q-product-date').value = targetProdDate;
+        } else {
+            document.getElementById('q-product-date').value = addDaysToISO(targetProdDate, totalDays);
+        }
+        runCalculation();
+    }
+
+    function runCalculation() {
+        var recDate = document.getElementById('q-receive-date').value;
+        var enteredDate = document.getElementById('q-product-date').value;
+        var rule = rules[selectedRuleIndex];
+
+        if (!recDate || !enteredDate || !rule) return;
+
+        var totalDays = getEffectiveTotalDays(rule);
+        var halfDays = Math.floor(totalDays / 2);
+
+        var ltObj = getLimitTypeObj(rule.limitType);
+        var limitDays = (ltObj && ltObj.op === 'half')
+            ? halfDays
+            : toDays(rule.limitVal, rule.limitUnit);
+
+        // If user overrode totalDays in Expiry-Only preset and rule uses half-life, adjust limitDays proportionally
+        if (activeDateType === 'exp' && document.getElementById('q-exp-duration-preset').value !== 'rule') {
+            if (rule.limitVal === Math.floor(toDays(rule.totVal, rule.totUnit) / 2)) {
+                limitDays = halfDays;
+            }
+        }
+
+        var prodDate = '';
+        var expDate = '';
+
+        if (activeDateType === 'prod') {
+            prodDate = enteredDate;
+            expDate = addDaysToISO(prodDate, totalDays);
+        } else {
+            expDate = enteredDate;
+            prodDate = addDaysToISO(expDate, -totalDays);
+        }
+
+        var halfDate = addDaysToISO(prodDate, halfDays);
+        var cutoffDate = addDaysToISO(prodDate, limitDays);
+        var elapsed = diffDaysISO(recDate, prodDate);
+        var remCutoff = diffDaysISO(cutoffDate, recDate);
+        var remHalf = diffDaysISO(halfDate, recDate);
+        var pct = Math.max(0, Math.min(100, (elapsed / totalDays) * 100));
+
+        document.getElementById('active-rule-badge').innerText = rule.name;
+        document.getElementById('res-half-date').innerText = halfDate;
+        document.getElementById('res-cutoff-date').innerText = cutoffDate;
+        document.getElementById('res-prod-date').innerText = prodDate;
+        document.getElementById('res-exp-date').innerText = expDate;
+        document.getElementById('res-elapsed-days').innerText = elapsed + ' يوم';
+        document.getElementById('res-limit-val').innerText = ltObj.label + ' (' + limitDays + ' يوم)';
+        document.getElementById('res-total-half').innerText = totalDays + ' يوم (نصفها ' + halfDays + ' يوم)';
+        document.getElementById('res-pct').innerText = ((elapsed / totalDays) * 100).toFixed(1) + '%';
+
+        document.getElementById('res-rule-note').innerText =
+            'المعيار المطبق: [' + rule.name + '] | نوع الحد: [' + ltObj.label + '] | 📅 تاريخ نصف المدة: (' + halfDate + ') | 🛑 آخر تاريخ مسموح للاستلام: (' + cutoffDate + ')';
+
+        var banner = document.getElementById('decision-banner');
+        var decTitle = document.getElementById('dec-title');
+        var decSub = document.getElementById('dec-subtitle');
+        var decHalf = document.getElementById('dec-halflife');
+        var prog = document.getElementById('dec-progress');
+
+        banner.className = 'decision-banner';
+        prog.style.width = pct + '%';
+
+        var isAccepted = false;
+        var opMode = ltObj ? ltObj.op : 'lte';
+
+        if (elapsed < 0) {
+            banner.classList.add('warn');
+            prog.style.background = '#D97706';
+            decTitle.innerText = '⚠️ خطأ في التاريخ المدخل';
+            decSub.innerText = 'تاريخ الإنتاج المحسوب (' + prodDate + ') في المستقبل مقارنة بتاريخ الاستلام (' + recDate + ').';
+            decHalf.innerText = '📅 تاريخ نصف المدة المحسوب: ' + halfDate;
+        } else if (elapsed > totalDays) {
+            banner.classList.add('reject');
+            prog.style.background = '#DC2626';
+            decTitle.innerText = '❌ مرفوض نهائياً (منتهي الصلاحية)';
+            decSub.innerText = 'انتهت صلاحية المنتج في (' + expDate + ') وتجاوز آخر موعد استلام (' + cutoffDate + ').';
+            decHalf.innerText = '📅 تاريخ نصف المدة كان: ' + halfDate + ' (تعدى نصف المدة والانتهاء)';
+        } else {
+            // In receiving inspection, elapsed days must not exceed the allowed limit days
+            if (opMode === 'lt') isAccepted = (elapsed < limitDays);
+            else isAccepted = (elapsed <= limitDays);
+
+            if (isAccepted) {
+                banner.classList.add('accept');
+                prog.style.background = '#16A34A';
+                decTitle.innerText = '✅ مقبول للاستلام (مطابق للشرط)';
+                decSub.innerText = 'مر على الإنتاج ' + elapsed + ' يوم من أصل ' + limitDays + ' يوم مسموح — متبقي ' + remCutoff + ' يوم حتى آخر موعد استلام (' + cutoffDate + ').';
+                decHalf.innerText = '📅 تاريخ نصف المدة (50%): ' + halfDate + (remHalf >= 0 ? (' — ✅ لم يتعدَّ نصف المدة (متبقي ' + remHalf + ' يوم)') : (' — ⚠️ تخطى نصف المدة بـ ' + Math.abs(remHalf) + ' يوم'));
+            } else {
+                banner.classList.add('reject');
+                prog.style.background = '#DC2626';
+                decTitle.innerText = '❌ مرفوض للاستلام (تعدى الشرط المسموح)';
+                decSub.innerText = 'مر على الإنتاج ' + elapsed + ' يوم وتخطى آخر موعد مسموح للاستلام (' + cutoffDate + ') بـ ' + Math.abs(remCutoff) + ' يوم.';
+                decHalf.innerText = '📅 تاريخ نصف المدة (50%): ' + halfDate + (remHalf >= 0 ? (' — (متبقي ' + remHalf + ' يوم لنصف المدة ولكن مرفوض لتجاوز شرط الصنف)') : (' — ❌ تعدى تاريخ نصف المدة منذ ' + Math.abs(remHalf) + ' يوم'));
+            }
+        }
+
+        var itemName = document.getElementById('q-item-name').value.trim();
+        currentResult = {
+            id: Date.now(),
+            recDate: recDate,
+            prodName: itemName || rule.name,
+            ruleName: rule.name,
+            prodDate: prodDate,
+            halfDate: halfDate,
+            cutoffDate: cutoffDate,
+            expDate: expDate,
+            elapsed: elapsed,
+            status: isAccepted ? 'accept' : 'reject',
+            decisionText: isAccepted ? '✅ مقبول للاستلام' : '❌ مرفوض (تعدى الشرط)'
+        };
+
+        renderQuickReferenceTable(recDate);
+    }
+
+    function renderQuickReferenceTable(recDate) {
+        var tbody = document.getElementById('quick-ref-tbody');
+        tbody.innerHTML = '';
+        for (var i = 0; i < rules.length; i++) {
+            var r = rules[i];
+            var totD = toDays(r.totVal, r.totUnit);
+            var ltObj = getLimitTypeObj(r.limitType);
+            var limD = (ltObj && ltObj.op === 'half') ? Math.floor(totD / 2) : toDays(r.limitVal, r.limitUnit);
+            var oldestProd = addDaysToISO(recDate, -limD);
+            var tr = document.createElement('tr');
+            tr.innerHTML =
+                '<td style="font-weight:800; text-align:right;">' + r.name + '</td>' +
+                '<td>' + r.totVal + ' ' + unitLabelAr(r.totUnit) + '</td>' +
+                '<td style="font-weight:800; color:var(--primary);">' + limD + ' يوم</td>' +
+                '<td style="font-weight:900; background:var(--highlight-bg); color:var(--highlight-text);">' + oldestProd + '</td>';
+            tbody.appendChild(tr);
+        }
+    }
+
+    function saveInspectionToLog() {
+        if (!currentResult) runCalculation();
+        var copy = JSON.parse(JSON.stringify(currentResult));
+        copy.id = Date.now();
+        dailyLogs.unshift(copy);
+        saveData();
+        document.getElementById('q-item-name').value = '';
+        renderDailyLog();
+        showToast('✅ تم تسجيل الفحص في سجل اليوم بنجاح');
+    }
+
+    function directAddFromLogTab() {
+        var name = document.getElementById('log-add-name').value.trim();
+        var sup = document.getElementById('log-add-supplier').value.trim();
+        var catIdx = Number(document.getElementById('log-add-cat').value);
+        var pDate = document.getElementById('log-add-pdate').value;
+        var recDate = document.getElementById('q-receive-date').value || toISODate(new Date());
+        var rule = rules[catIdx];
+
+        if (!pDate || !rule) {
+            alert('يرجى اختيار الفئة وتاريخ الإنتاج المدون على المنتج.');
+            return;
+        }
+
+        var totD = toDays(rule.totVal, rule.totUnit);
+        var halfD = Math.floor(totD / 2);
+        var ltObj = getLimitTypeObj(rule.limitType);
+        var limD = (ltObj && ltObj.op === 'half') ? halfD : toDays(rule.limitVal, rule.limitUnit);
+
+        var halfDate = addDaysToISO(pDate, halfD);
+        var cutoffDate = addDaysToISO(pDate, limD);
+        var expDate = addDaysToISO(pDate, totD);
+        var elapsed = diffDaysISO(recDate, pDate);
+        var isAcc = (elapsed >= 0 && elapsed <= limD);
+
+        var fullTitle = name ? (sup ? (name + ' (' + sup + ')') : name) : rule.name;
+        dailyLogs.unshift({
+            id: Date.now(),
+            recDate: recDate,
+            prodName: fullTitle,
+            ruleName: rule.name,
+            prodDate: pDate,
+            halfDate: halfDate,
+            cutoffDate: cutoffDate,
+            expDate: expDate,
+            elapsed: elapsed,
+            status: isAcc ? 'accept' : 'reject',
+            decisionText: isAcc ? '✅ مقبول للاستلام' : '❌ مرفوض (تعدى الشرط)'
+        });
+
+        saveData();
+        document.getElementById('log-add-name').value = '';
+        document.getElementById('log-add-supplier').value = '';
+        renderDailyLog();
+        showToast('✅ تمت إضافة الصنف إلى سجل استلام اليوم!');
+    }
+
+    function populateYearSelect() {
+        var yearSel = document.getElementById('rep-year-input');
+        if (!yearSel) return;
+        var currentYear = new Date().getFullYear();
+        var yearsMap = {};
+        yearsMap[currentYear] = true;
+        yearsMap[currentYear - 1] = true;
+        yearsMap[currentYear + 1] = true;
+        for (var i = 0; i < dailyLogs.length; i++) {
+            if (dailyLogs[i].recDate && dailyLogs[i].recDate.length >= 4) {
+                yearsMap[dailyLogs[i].recDate.substring(0, 4)] = true;
+            }
+        }
+        var yearsList = Object.keys(yearsMap).sort().reverse();
+        var prevVal = yearSel.value || String(currentYear);
+        yearSel.innerHTML = '';
+        for (var j = 0; j < yearsList.length; j++) {
+            var opt = document.createElement('option');
+            opt.value = yearsList[j];
+            opt.textContent = 'سنة ' + yearsList[j];
+            yearSel.appendChild(opt);
+        }
+        yearSel.value = prevVal;
+    }
+
+    function setReportMode(mode) {
+        reportMode = mode;
+        var modes = ['daily', 'monthly', 'yearly', 'all'];
+        for (var i = 0; i < modes.length; i++) {
+            var m = modes[i];
+            var btn = document.getElementById('rep-btn-' + m);
+            if (btn) btn.className = 'dtype-btn' + (m === mode ? ' active' : '');
+        }
+        document.getElementById('rep-picker-daily').style.display = (mode === 'daily') ? 'block' : 'none';
+        document.getElementById('rep-picker-monthly').style.display = (mode === 'monthly') ? 'block' : 'none';
+        document.getElementById('rep-picker-yearly').style.display = (mode === 'yearly') ? 'block' : 'none';
+        populateYearSelect();
+        renderDailyLog();
+    }
+
+    function getFilteredReportLogs() {
+        var dVal = document.getElementById('rep-date-input') ? document.getElementById('rep-date-input').value : '';
+        var mVal = document.getElementById('rep-month-input') ? document.getElementById('rep-month-input').value : '';
+        var yVal = document.getElementById('rep-year-input') ? document.getElementById('rep-year-input').value : '';
+        var searchVal = document.getElementById('rep-search-item') ? document.getElementById('rep-search-item').value.trim().toLowerCase() : '';
+        var statusVal = document.getElementById('rep-status-filter') ? document.getElementById('rep-status-filter').value : 'all';
+
+        var filtered = [];
+        for (var i = 0; i < dailyLogs.length; i++) {
+            var it = dailyLogs[i];
+            var rDate = it.recDate || '';
+            var matchTime = true;
+            if (reportMode === 'daily' && dVal) {
+                matchTime = (rDate === dVal);
+            } else if (reportMode === 'monthly' && mVal) {
+                matchTime = (rDate.substring(0, 7) === mVal);
+            } else if (reportMode === 'yearly' && yVal) {
+                matchTime = (rDate.substring(0, 4) === yVal);
+            }
+
+            var matchStatus = (statusVal === 'all') || (it.status === statusVal);
+            var matchSearch = true;
+            if (searchVal) {
+                var combined = ((it.prodName || '') + ' ' + (it.ruleName || '')).toLowerCase();
+                matchSearch = (combined.indexOf(searchVal) !== -1);
+            }
+
+            if (matchTime && matchStatus && matchSearch) {
+                filtered.push(it);
+            }
+        }
+        return filtered;
+    }
+
+    function getReportPeriodLabel() {
+        var dVal = document.getElementById('rep-date-input') ? document.getElementById('rep-date-input').value : '';
+        var mVal = document.getElementById('rep-month-input') ? document.getElementById('rep-month-input').value : '';
+        var yVal = document.getElementById('rep-year-input') ? document.getElementById('rep-year-input').value : '';
+        if (reportMode === 'daily') return '📅 التقرير اليومي لتاريخ: ' + (dVal || 'كل الأيام');
+        if (reportMode === 'monthly') return '🗓️ التقرير الشهري لشهر: ' + (mVal || 'كل الشهور');
+        if (reportMode === 'yearly') return '📆 التقرير السنوي لعام: ' + (yVal || 'كل السنوات');
+        return '🌐 التقرير الشامل لجميع الفحوصات المسجلة';
+    }
+
+    function renderDailyLog() {
+        document.getElementById('nav-log-count').innerText = dailyLogs.length;
+        populateYearSelect();
+
+        var filtered = getFilteredReportLogs();
+        var periodTitle = getReportPeriodLabel();
+        var titleEl = document.getElementById('rep-active-title');
+        if (titleEl) titleEl.innerText = periodTitle + ' — (عدد السجلات المطابقة: ' + filtered.length + ')';
+
+        var container = document.getElementById('daily-log-container');
+        var tot = filtered.length;
+        var acc = 0, rej = 0;
+        var prodStats = {};
+
+        for (var i = 0; i < filtered.length; i++) {
+            var item = filtered[i];
+            if (item.status === 'accept') acc++; else rej++;
+
+            var pKey = item.prodName || 'غير مسمى';
+            if (!prodStats[pKey]) {
+                prodStats[pKey] = { total: 0, acc: 0, rej: 0 };
+            }
+            prodStats[pKey].total++;
+            if (item.status === 'accept') prodStats[pKey].acc++; else prodStats[pKey].rej++;
+        }
+        var rate = tot > 0 ? Math.round((acc / tot) * 100) : 0;
+
+        document.getElementById('kpi-tot').innerText = tot;
+        document.getElementById('kpi-acc').innerText = acc;
+        document.getElementById('kpi-rej').innerText = rej;
+        document.getElementById('kpi-rate').innerText = rate + '%';
+
+        // Render Product Summary Breakdown Table
+        var sumWrap = document.getElementById('rep-summary-wrap');
+        var sumTbody = document.getElementById('rep-summary-tbody');
+        var pKeys = Object.keys(prodStats);
+        if (pKeys.length > 0 && sumWrap && sumTbody) {
+            sumWrap.style.display = 'block';
+            sumTbody.innerHTML = '';
+            for (var s = 0; s < pKeys.length; s++) {
+                var k = pKeys[s];
+                var st = prodStats[k];
+                var pRate = Math.round((st.acc / st.total) * 100);
+                var tr = document.createElement('tr');
+                tr.innerHTML =
+                    '<td style="text-align:right; font-weight:800;">' + k + '</td>' +
+                    '<td style="font-weight:800;">' + st.total + '</td>' +
+                    '<td style="color:#15803D; font-weight:800;">' + st.acc + '</td>' +
+                    '<td style="color:#B91C1C; font-weight:800;">' + st.rej + '</td>' +
+                    '<td style="font-weight:800;">' + pRate + '%</td>';
+                sumTbody.appendChild(tr);
+            }
+        } else if (sumWrap) {
+            sumWrap.style.display = 'none';
+        }
+
+        if (tot === 0) {
+            container.innerHTML = '<div style="text-align:center; padding:20px; color:#64748B; font-weight:700;">لا توجد شحنات مسجلة في هذه الفترة الزمنية (يمكنك الضغط على «🌐 شامل الكل» لعرض كل التواريخ).</div>';
+            return;
+        }
+
+        container.innerHTML = '';
+        for (var j = 0; j < filtered.length; j++) {
+            var it = filtered[j];
+            var card = document.createElement('div');
+            card.className = 'log-card ' + it.status;
+            card.innerHTML =
+                '<div class="log-card-top"><span>📦 ' + it.prodName + '</span><span style="color:' + (it.status==='accept'?'#16A34A':'#DC2626') + ';">' + it.decisionText + '</span></div>' +
+                '<div class="log-card-body">' +
+                '• تاريخ الاستلام: <b>' + it.recDate + '</b> | المعيار: <b>' + it.ruleName + '</b><br>' +
+                '• تاريخ الإنتاج المدون: <b>' + it.prodDate + '</b> | الانتهاء: <b>' + it.expDate + '</b><br>' +
+                '• 📅 تاريخ نصف المدة (50%): <b style="color:#9A3412;">' + it.halfDate + '</b><br>' +
+                '• 🛑 آخر تاريخ مسموح للاستلام (حد الرفض): <b style="color:#9A3412;">' + it.cutoffDate + '</b><br>' +
+                '• الأيام المنقضية: <b>' + it.elapsed + ' يوم</b>' +
+                '</div>' +
+                '<div style="text-align:left; margin-top:5px;"><button class="btn-sm" style="background:#FEE2E2; color:#991B1B;" onclick="deleteLog(' + it.id + ')">حذف ✕</button></div>';
+            container.appendChild(card);
+        }
+    }
+
+    function deleteLog(id) {
+        dailyLogs = dailyLogs.filter(function(x) { return x.id !== id; });
+        saveData();
+        renderDailyLog();
+        showToast('🗑️ تم الحذف');
+    }
+
+    function loadSampleLogs() {
+        seedSampleLogs();
+        setReportMode('all');
+        showToast('✅ تم تحميل بيانات تجريبية وعرض التقرير الشامل');
+    }
+
+    function clearAllLogs() {
+        if (confirm('مسح السجل بالكامل؟')) {
+            dailyLogs = [];
+            saveData();
+            renderDailyLog();
+        }
+    }
+
+    function exportLogToCSV() {
+        var filtered = getFilteredReportLogs();
+        if (filtered.length === 0) { alert('لا توجد بيانات في فترة التقرير المحددة لتصديرها!'); return; }
+        var today = toISODate(new Date());
+        var periodTitle = getReportPeriodLabel();
+        var acc = 0, rej = 0;
+        var rowsHtml = '';
+        for (var i = 0; i < filtered.length; i++) {
+            var r = filtered[i];
+            var isAcc = (r.status === 'accept');
+            if (isAcc) acc++; else rej++;
+            var bgStatus = isAcc ? '#DCFCE7' : '#FEE2E2';
+            var colorStatus = isAcc ? '#14532D' : '#7F1D1D';
+            var rowBg = (i % 2 === 0) ? '#FFFFFF' : '#F8FAFC';
+            rowsHtml += '<tr style="background:' + rowBg + '; text-align:center; font-family:Arial, sans-serif; font-size:11pt;">' +
+                '<td style="border:1px solid #94A3B8; padding:6px;">' + (i + 1) + '</td>' +
+                '<td style="border:1px solid #94A3B8; padding:6px; mso-number-format:\'\@\';">' + r.recDate + '</td>' +
+                '<td style="border:1px solid #94A3B8; padding:6px; font-weight:bold; text-align:right;">' + r.prodName + '</td>' +
+                '<td style="border:1px solid #94A3B8; padding:6px; text-align:right;">' + r.ruleName + '</td>' +
+                '<td style="border:1px solid #94A3B8; padding:6px; mso-number-format:\'\@\';">' + r.prodDate + '</td>' +
+                '<td style="border:1px solid #94A3B8; padding:6px; background:#FFFBEB; color:#9A3412; font-weight:bold; mso-number-format:\'\@\';">' + r.halfDate + '</td>' +
+                '<td style="border:1px solid #94A3B8; padding:6px; background:#FFFBEB; color:#9A3412; font-weight:bold; mso-number-format:\'\@\';">' + r.cutoffDate + '</td>' +
+                '<td style="border:1px solid #94A3B8; padding:6px; mso-number-format:\'\@\';">' + r.expDate + '</td>' +
+                '<td style="border:1px solid #94A3B8; padding:6px; font-weight:bold;">' + r.elapsed + ' يوم</td>' +
+                '<td style="border:1px solid #94A3B8; padding:6px; background:' + bgStatus + '; color:' + colorStatus + '; font-weight:bold;">' + r.decisionText + '</td>' +
+                '</tr>';
+        }
+        var rate = filtered.length > 0 ? Math.round((acc / filtered.length) * 100) : 0;
+
+        var excelTemplate = '<html xmlns:o="urn:schemas-microsoft-com:office:office" ' +
+            'xmlns:x="urn:schemas-microsoft-com:office:excel" ' +
+            'xmlns="http://www.w3.org/TR/REC-html40" dir="rtl" lang="ar">' +
+            '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">' +
+            '<!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>' +
+            '<x:Name>تقرير استلام البضائع</x:Name>' +
+            '<x:WorksheetOptions><x:DisplayRightToLeft/><x:DisplayGridlines/></x:WorksheetOptions>' +
+            '</x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->' +
+            '</head><body dir="rtl" style="font-family:Arial, sans-serif;">' +
+            '<table dir="rtl" border="1" style="border-collapse:collapse; width:100%;">' +
+            '<thead>' +
+            '<tr><th colspan="10" style="background:#1B365D; color:#FFFFFF; font-size:14pt; padding:10px; text-align:center;">' + periodTitle + '</th></tr>' +
+            '<tr><th colspan="10" style="background:#F1F5F9; color:#0F172A; font-size:11pt; padding:8px; text-align:center;">إجمالي الشحنات: ' + filtered.length + ' | مقبول: ' + acc + ' | مرفوض: ' + rej + ' | نسبة القبول: ' + rate + '%</th></tr>' +
+            '<tr style="background:#2C3E50; color:#FFFFFF; font-size:11pt; font-weight:bold; text-align:center;">' +
+            '<th style="border:1px solid #94A3B8; padding:8px;">م</th>' +
+            '<th style="border:1px solid #94A3B8; padding:8px;">تاريخ الاستلام</th>' +
+            '<th style="border:1px solid #94A3B8; padding:8px;">اسم الصنف والمورد</th>' +
+            '<th style="border:1px solid #94A3B8; padding:8px;">فئة الصلاحية / الشرط المطبق</th>' +
+            '<th style="border:1px solid #94A3B8; padding:8px;">تاريخ الإنتاج المدون على المنتج</th>' +
+            '<th style="border:1px solid #94A3B8; padding:8px;">تاريخ نصف المدة (50%)</th>' +
+            '<th style="border:1px solid #94A3B8; padding:8px;">آخر تاريخ مسموح للاستلام (حد الرفض)</th>' +
+            '<th style="border:1px solid #94A3B8; padding:8px;">تاريخ انتهاء الصلاحية</th>' +
+            '<th style="border:1px solid #94A3B8; padding:8px;">الأيام المنقضية</th>' +
+            '<th style="border:1px solid #94A3B8; padding:8px;">قرار الاستلام النهائي</th>' +
+            '</tr></thead><tbody>' + rowsHtml + '</tbody></table></body></html>';
+
+        var blob = new Blob(['\uFEFF' + excelTemplate], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'تقرير_استلام_البضائع_' + today + '.xls';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+
+    // Settings Management
+    function saveRuleConfig() {
+        var editIdx = Number(document.getElementById('edit-rule-index').value);
+        var name = document.getElementById('cfg-name').value.trim();
+        var totVal = Number(document.getElementById('cfg-tot-val').value);
+        var totUnit = document.getElementById('cfg-tot-unit').value;
+        var limitType = document.getElementById('cfg-limit-type').value;
+        var limitVal = Number(document.getElementById('cfg-limit-val').value);
+        var limitUnit = document.getElementById('cfg-limit-unit').value;
+
+        if (!name || totVal <= 0 || limitVal <= 0) {
+            alert('يرجى إكمال بيانات الشرط (الاسم، مدة الصلاحية، وقيمة الحد) بشكل صحيح.');
+            return;
+        }
+
+        var obj = {
+            id: editIdx >= 0 ? rules[editIdx].id : Date.now(),
+            name: name,
+            totVal: totVal,
+            totUnit: totUnit,
+            limitType: limitType,
+            limitVal: limitVal,
+            limitUnit: limitUnit
+        };
+
+        if (editIdx >= 0) {
+            rules[editIdx] = obj;
+        } else {
+            rules.push(obj);
+            selectedRuleIndex = rules.length - 1;
+        }
+        saveData();
+        resetRuleForm();
+        renderCategoryDropdown();
+        renderSettingsTable();
+        runCalculation();
+        showToast('✅ تم حفظ الشرط وتحديث القوائم بنجاح');
+    }
+
+    function editRule(idx) {
+        var r = rules[idx];
+        document.getElementById('edit-rule-index').value = idx;
+        document.getElementById('cfg-name').value = r.name;
+        document.getElementById('cfg-tot-val').value = r.totVal;
+        document.getElementById('cfg-tot-unit').value = r.totUnit;
+
+        // Ensure limitType exists in dropdown
+        if (!limitTypes.some(function(x){ return x.code === r.limitType; })) {
+            limitTypes.push({ code: r.limitType, label: r.limitType, op: 'lte', autoTotalDays: 0, autoLimitDays: 0 });
+            renderLimitTypesUI();
+        }
+        document.getElementById('cfg-limit-type').value = r.limitType;
+        document.getElementById('cfg-limit-val').value = r.limitVal;
+        document.getElementById('cfg-limit-unit').value = r.limitUnit;
+        document.getElementById('form-rule-title').innerText = '✏️ تعديل الشرط: ' + r.name;
+        document.getElementById('btn-save-rule').innerText = '💾 حفظ التعديلات';
+        document.getElementById('btn-cancel-edit').style.display = 'inline-flex';
+        window.scrollTo(0, 0);
+    }
+
+    function resetRuleForm() {
+        document.getElementById('edit-rule-index').value = -1;
+        document.getElementById('cfg-name').value = '';
+        document.getElementById('cfg-tot-val').value = '';
+        document.getElementById('cfg-limit-val').value = '';
+        document.getElementById('form-rule-title').innerText = '⚙️ إضافة وتعديل شروط الاستلام الاحترافية';
+        document.getElementById('btn-save-rule').innerText = '➕ حفظ وتحديث الشرط في النظام';
+        document.getElementById('btn-cancel-edit').style.display = 'none';
+    }
+
+    function deleteRule(idx) {
+        if (rules.length <= 1) { alert('يجب بقاء شرط واحد على الأقل'); return; }
+        if (confirm('هل تريد حذف الشرط: "' + rules[idx].name + '"؟')) {
+            rules.splice(idx, 1);
+            if (selectedRuleIndex >= rules.length) selectedRuleIndex = 0;
+            saveData();
+            renderCategoryDropdown();
+            renderSettingsTable();
+            runCalculation();
+            showToast('🗑️ تم حذف الشرط');
+        }
+    }
+
+    function restoreDefaultRules() {
+        if (confirm('استعادة كافة المعايير وأنواع الحدود الأصلية؟')) {
+            limitTypes = JSON.parse(JSON.stringify(DEFAULT_LIMIT_TYPES));
+            rules = JSON.parse(JSON.stringify(INITIAL_RULES));
+            selectedRuleIndex = 4;
+            saveData();
+            renderLimitTypesUI();
+            renderCategoryDropdown();
+            renderSettingsTable();
+            runCalculation();
+            showToast('🔄 تمت استعادة كافة المعايير الأصلية بنجاح');
+        }
+    }
+
+    function renderSettingsTable() {
+        document.getElementById('rules-count-badge').innerText = rules.length;
+        var tbody = document.getElementById('settings-rules-tbody');
+        tbody.innerHTML = '';
+        for (var i = 0; i < rules.length; i++) {
+            var r = rules[i];
+            var totDays = toDays(r.totVal, r.totUnit);
+            var halfDays = Math.floor(totDays / 2);
+            var ltObj = getLimitTypeObj(r.limitType);
+            var tr = document.createElement('tr');
+            tr.innerHTML =
+                '<td style="text-align:right; font-weight:800;">' + r.name + '</td>' +
+                '<td>' + r.totVal + ' ' + unitLabelAr(r.totUnit) + ' (' + totDays + ' يوم)</td>' +
+                '<td style="background:var(--highlight-bg); font-weight:800; color:var(--highlight-text);">' + halfDays + ' يوم</td>' +
+                '<td><span style="color:var(--primary); font-weight:800;">' + ltObj.label + '</span><br><small>الحد: ' + r.limitVal + ' ' + unitLabelAr(r.limitUnit) + '</small></td>' +
+                '<td><div style="display:flex; gap:4px; justify-content:center;"><button class="btn-sm" style="background:#DBEAFE; color:#1E40AF;" onclick="editRule(' + i + ')">تعديل ✏️</button><button class="btn-sm" style="background:#FEE2E2; color:#991B1B;" onclick="deleteRule(' + i + ')">✕</button></div></td>';
+            tbody.appendChild(tr);
+        }
+    }
+
+    (function initAppNow() {
+        try {
+            loadData();
+            var today = toISODate(new Date());
+            document.getElementById('q-receive-date').value = today;
+            document.getElementById('q-product-date').value = addDaysToISO(today, -120);
+            document.getElementById('log-add-pdate').value = addDaysToISO(today, -10);
+            if (document.getElementById('rep-date-input')) document.getElementById('rep-date-input').value = today;
+            if (document.getElementById('rep-month-input')) document.getElementById('rep-month-input').value = today.substring(0, 7);
+            populateYearSelect();
+            setReportMode('daily');
+            renderLimitTypesUI();
+            renderCategoryDropdown();
+            renderSettingsTable();
+            runCalculation();
+            renderDailyLog();
+        } catch (err) {
+            console.error(err);
+        }
+    })();
+
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js').catch(function(){});
+    }
+</script>
+</body>
+</html>
