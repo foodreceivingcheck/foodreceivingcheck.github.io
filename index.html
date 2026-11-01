@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>منظومة فحص واستلام البضائع الاحترافية الذكية - سياسة ماجد الفطيم / كارفور</title>
+    <title>منظومة فحص واستلام البضائع الاحترافية الذكية</title>
     <style>
         :root {
             --primary: #1B365D;
@@ -141,6 +141,47 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 6px;
+        }
+
+        .cat-pills-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 7px;
+            margin-bottom: 10px;
+            max-height: 230px;
+            overflow-y: auto;
+            padding: 2px;
+        }
+        .cat-pill {
+            padding: 8px 6px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            background: #F8FAFC;
+            color: var(--text);
+            font-size: 0.76rem;
+            font-weight: 800;
+            text-align: center;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            user-select: none;
+        }
+        .cat-pill small {
+            font-size: 0.66rem;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+        .cat-pill.active {
+            background: var(--primary) !important;
+            color: #fff !important;
+            border-color: var(--primary) !important;
+            box-shadow: 0 2px 6px rgba(27,54,93,0.25);
+        }
+        .cat-pill.active small {
+            color: #FEF3C7 !important;
         }
 
         .form-group { margin-bottom: 12px; }
@@ -313,6 +354,45 @@
         .log-card-top { display: flex; justify-content: space-between; align-items: center; font-weight: 800; margin-bottom: 5px; }
         .log-card-body { color: var(--text-muted); font-size: 0.75rem; line-height: 1.55; }
 
+        /* Tag list for managing Limit Types */
+        .limit-types-manager {
+            background: #F8FAFC;
+            border: 1.5px dashed #94A3B8;
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 8px;
+            margin-bottom: 12px;
+        }
+        .ltype-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 10px;
+        }
+        .ltype-tag {
+            background: #FFFFFF;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 5px 9px;
+            font-size: 0.76rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+        }
+        .ltype-tag button {
+            background: #FEE2E2;
+            color: #991B1B;
+            border: none;
+            border-radius: 4px;
+            padding: 1px 5px;
+            font-size: 0.7rem;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -359,6 +439,9 @@
     </style>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1B365D">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="فاحص البضائع">
 </head>
 <body>
 
@@ -369,45 +452,43 @@
 <div id="toast-msg"></div>
 
 <header>
-    <h1>📦 سياسة ماجد الفطيم / كارفور للاستلام (v10.1)</h1>
-    <p>تطبيق معايير الاستلام بدقة، دعم الباركود، وإدارة الفروع والتقارير</p>
+    <h1>📦 منظومة فحص واستلام البضائع الاحترافية (إصدار الفروع v9)</h1>
+    <p>مراقبة شرط نصف المدة، إدارة الفروع، التقارير الذكية، وتاريخ الإنتاج أو الانتهاء</p>
     <div class="top-tabs">
         <label for="tab-radio-quick" class="top-tab-lbl" onclick="onTabChanged('quick')">⚡ الاستعلام السريع</label>
-        <label for="tab-radio-log" class="top-tab-lbl" onclick="onTabChanged('log')">📋 سجل الفروع <span class="badge-count" id="nav-log-count">0</span></label>
-        <label for="tab-radio-settings" class="top-tab-lbl" onclick="onTabChanged('settings')">⚙️ الإدارة والشروط</label>
+        <label for="tab-radio-log" class="top-tab-lbl" onclick="onTabChanged('log')">📋 سجل اليوم والفروع <span class="badge-count" id="nav-log-count">0</span></label>
+        <label for="tab-radio-settings" class="top-tab-lbl" onclick="onTabChanged('settings')">⚙️ إدارة الشروط</label>
     </div>
 </header>
 
 <div class="container">
 
-    <!-- TAB 1 -->
+    <!-- ========================================== -->
+    <!-- TAB 1: QUICK INQUIRY & INSTANT CALCULATOR  -->
+    <!-- ========================================== -->
     <div id="pane-quick" class="tab-pane">
         <div class="card">
             <div style="background:#E2E8F0; padding:10px; border-radius:10px; margin-bottom:12px; border:1.5px solid #CBD5E1;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                    <label class="form-label" style="margin-bottom:0; color:var(--primary);">🏢 اختر الفرع المسجل:</label>
-                    <button type="button" class="btn-sm" style="background:var(--primary); color:#fff;" onclick="switchToSettingsTab()">+ إضافة فرع جديد</button>
+                <div style="font-size:0.82rem; font-weight:800; color:var(--primary); margin-bottom:6px;">🏢 بيانات الفرع وموقع الفحص:</div>
+                <div class="dates-grid">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label" style="font-size:0.76rem;">اسم الفرع:</label>
+                        <input type="text" id="q-branch-name" class="form-control" placeholder="مثال: فرع المعادي الرئيسي" style="background:#FFF;">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label" style="font-size:0.76rem;">رقم الفرع:</label>
+                        <input type="text" id="q-branch-num" class="form-control" placeholder="مثال: BR-101" style="background:#FFF;">
+                    </div>
                 </div>
-                <select id="q-branch-select" class="form-control" style="background:#FFF;"></select>
             </div>
 
+            <div id="category-pills-container" style="display:none;"></div>
             <div class="form-group" style="margin-top:2px;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
                     <label class="form-label" style="margin-bottom:0;">فئة الصلاحية / المعيار:</label>
                     <span style="font-size:0.75rem; font-weight:800; color:var(--secondary);" id="active-rule-badge"></span>
                 </div>
                 <select id="q-category-select" class="form-control" onchange="onSelectCategoryDropdown(this.value)"></select>
-            </div>
-
-            <div class="dates-grid" style="margin-bottom:12px;">
-                <div class="form-group" style="margin-bottom:0;">
-                    <label class="form-label" style="color:var(--primary);">📷 باركود المنتج (سكان):</label>
-                    <input type="text" id="q-barcode" class="form-control" placeholder="امسح الباركود أو اكتبه..." autofocus style="background:#FFF;">
-                </div>
-                <div class="form-group" style="margin-bottom:0;">
-                    <label class="form-label">اسم الصنف / المورد:</label>
-                    <input type="text" id="q-item-name" class="form-control" placeholder="مثال: الذبيحة الكاملة / لحوم مبردة">
-                </div>
             </div>
 
             <div class="form-group">
@@ -418,6 +499,7 @@
                 </div>
             </div>
 
+            <!-- Extra shelf-life selector when Product has ONLY Expiry Date and "Best Used Within..." -->
             <div id="exp-only-helper-box" class="form-group" style="display:none; background:#FFFBEB; padding:10px; border-radius:8px; border:1px solid #F59E0B;">
                 <label class="form-label" style="color:#9A3412;">💡 للمنتجات المكتوب عليها «تاريخ انتهاء فقط» مع عبارة (يفضل الاستخدام خلال...):</label>
                 <select id="q-exp-duration-preset" class="form-control" onchange="onPresetDurationChange(this.value)" style="background:#FFFFFF;">
@@ -426,7 +508,10 @@
                     <option value="180">6 شهور (180 يوم)</option>
                     <option value="270">9 شهور (270 يوم)</option>
                     <option value="365">سنة (12 شهر)</option>
+                    <option value="540">18 شهر (سنة ونصف)</option>
                     <option value="730">سنتين (24 شهر)</option>
+                    <option value="1095">3 سنوات (36 شهر)</option>
+                    <option value="1825">5 سنوات (60 شهر)</option>
                 </select>
             </div>
 
@@ -442,12 +527,19 @@
                 </div>
             </div>
 
-            <div class="form-group" style="margin-bottom:0;">
-                <label class="form-label">تاريخ الاستلام الفعلي بالفرع:</label>
-                <input type="date" id="q-receive-date" class="form-control" onchange="runCalculation()">
+            <div class="dates-grid">
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">تاريخ الاستلام الفعلي بالفرع:</label>
+                    <input type="date" id="q-receive-date" class="form-control" onchange="runCalculation()">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">اسم الصنف / المورد (اختياري):</label>
+                    <input type="text" id="q-item-name" class="form-control" placeholder="مثال: لحوم مبردة / أرز / زيت">
+                </div>
             </div>
         </div>
 
+        <!-- Decision Banner -->
         <div id="decision-banner" class="decision-banner accept">
             <div class="decision-main" id="dec-title">✅ مقبول للاستلام</div>
             <div class="decision-detail" id="dec-subtitle"></div>
@@ -457,6 +549,7 @@
             </div>
         </div>
 
+        <!-- Governing Dates Card -->
         <div class="card">
             <div class="card-header">
                 <span>📅 نتيجة الفحص والتواريخ الحاكمة (تاريخ نصف المدة وآخر استلام)</span>
@@ -499,10 +592,11 @@
             <div id="res-rule-note" style="margin-top:10px; padding:8px; background:#F1F5F9; border-radius:6px; font-size:0.78rem; font-weight:700; text-align:center; color:var(--primary);"></div>
 
             <button type="button" class="btn btn-save" onclick="saveInspectionToLog()">
-                💾 تسجيل هذا الفحص في «سجل الفروع والتقارير»
+                💾 تسجيل هذا الفحص في «سجل اليوم والتقارير»
             </button>
         </div>
 
+        <!-- Quick Daily Reference Guide -->
         <div class="card">
             <div class="card-header">
                 <span>📌 جدول مرجع اليوم السريع (أقدم تاريخ إنتاج يُقبل اليوم وتاريخ نصف المدة)</span>
@@ -523,34 +617,41 @@
         </div>
     </div>
 
-    <!-- TAB 2 -->
+    <!-- ========================================== -->
+    <!-- TAB 2: DAILY LOG & REPORTS ENGINE          -->
+    <!-- ========================================== -->
     <div id="pane-log" class="tab-pane">
+        <!-- Direct Add inside Log Tab -->
         <div class="card">
             <div class="card-header">
-                <span>➕ إضافة سريعة مباشرة مع اختيار الفرع والباركود</span>
+                <span>➕ إضافة سريعة مباشرة مع بيانات الفرع</span>
             </div>
             <div class="dates-grid">
                 <div class="form-group">
-                    <label class="form-label">اختر الفرع المسجل:</label>
-                    <select id="log-add-branch-select" class="form-control" style="background:#FFF;"></select>
+                    <label class="form-label">اسم الفرع:</label>
+                    <input type="text" id="log-add-bname" class="form-control" placeholder="مثال: فرع المعادي">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">باركود المنتج:</label>
-                    <input type="text" id="log-add-barcode" class="form-control" placeholder="الباركود...">
+                    <label class="form-label">رقم الفرع:</label>
+                    <input type="text" id="log-add-bnum" class="form-control" placeholder="مثال: BR-101">
                 </div>
             </div>
             <div class="dates-grid">
                 <div class="form-group">
-                    <label class="form-label">اسم الصنف / المورد:</label>
-                    <input type="text" id="log-add-name" class="form-control" placeholder="مثال: الذبيحة الكاملة / لحوم مبردة">
+                    <label class="form-label">اسم الصنف / البضاعة:</label>
+                    <input type="text" id="log-add-name" class="form-control" placeholder="مثال: أرز / زيت / دواجن">
                 </div>
+                <div class="form-group">
+                    <label class="form-label">اسم المورد / الشركة:</label>
+                    <input type="text" id="log-add-supplier" class="form-control" placeholder="مثال: شركة التوريدات">
+                </div>
+            </div>
+            <div class="dates-grid">
                 <div class="form-group">
                     <label class="form-label">فئة الصلاحية / الشرط:</label>
                     <select id="log-add-cat" class="form-control"></select>
                 </div>
-            </div>
-            <div class="dates-grid">
-                <div class="form-group" style="grid-column: span 2;">
+                <div class="form-group">
                     <label class="form-label">تاريخ الإنتاج المدون على المنتج:</label>
                     <input type="date" id="log-add-pdate" class="form-control">
                 </div>
@@ -560,6 +661,7 @@
             </button>
         </div>
 
+        <!-- Reports & Filtering Control Panel (Daily / Monthly / Yearly + Branch Filter) -->
         <div class="card" style="border: 2px solid var(--primary);">
             <div class="card-header">
                 <span>📊 استخراج تقارير الفروع (يومي / شهري / سنوي)</span>
@@ -569,6 +671,7 @@
                 </div>
             </div>
 
+            <!-- Report Period Type Selector -->
             <div class="form-group">
                 <label class="form-label">1️⃣ اختر نوع التقرير الزمني:</label>
                 <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:6px;">
@@ -579,6 +682,7 @@
                 </div>
             </div>
 
+            <!-- Dynamic Period Pickers -->
             <div id="rep-picker-daily" class="form-group">
                 <label class="form-label">اختر اليوم المطلوب عرض تقريره:</label>
                 <input type="date" id="rep-date-input" class="form-control" onchange="renderDailyLog()">
@@ -594,10 +698,11 @@
                 <select id="rep-year-input" class="form-control" onchange="renderDailyLog()"></select>
             </div>
 
+            <!-- Branch & Product & Status Filter -->
             <div class="dates-grid" style="margin-bottom:10px;">
                 <div class="form-group" style="margin-bottom:0;">
-                    <label class="form-label">فلترة حسب الفرع:</label>
-                    <select id="rep-branch-filter" class="form-control" onchange="renderDailyLog()"></select>
+                    <label class="form-label">بحث باسم الفرع أو الصنف أو المورد:</label>
+                    <input type="text" id="rep-search-item" class="form-control" placeholder="اكتب اسم الفرع أو الصنف للفرز..." oninput="renderDailyLog()">
                 </div>
                 <div class="form-group" style="margin-bottom:0;">
                     <label class="form-label">حالة القبول / الرفض:</label>
@@ -609,13 +714,9 @@
                 </div>
             </div>
 
-            <div class="form-group" style="margin-bottom:10px;">
-                <label class="form-label">بحث حر (باركود / صنف / مورد):</label>
-                <input type="text" id="rep-search-item" class="form-control" placeholder="ابحث بالباركود أو اسم الصنف..." oninput="renderDailyLog()">
-            </div>
-
             <div id="rep-active-title" style="background:#EFF6FF; color:var(--primary); padding:8px 10px; border-radius:8px; font-size:0.8rem; font-weight:800; text-align:center; margin-bottom:10px; border:1px solid #BFDBFE;"></div>
 
+            <!-- KPIs for Selected Report Period -->
             <div class="kpi-grid">
                 <div class="kpi-box"><span class="n" id="kpi-tot">0</span><span class="t">إجمالي الفحص</span></div>
                 <div class="kpi-box" style="background:var(--success-bg); color:var(--success-text);"><span class="n" id="kpi-acc">0</span><span class="t">مقبول ✅</span></div>
@@ -623,6 +724,7 @@
                 <div class="kpi-box" style="background:var(--highlight-bg); color:var(--highlight-text);"><span class="n" id="kpi-rate">0%</span><span class="t">نسبة القبول</span></div>
             </div>
 
+            <!-- Summary Table by Branch / Product for the Selected Period -->
             <div id="rep-summary-wrap" style="margin-bottom:14px; display:none;">
                 <div style="font-size:0.82rem; font-weight:800; color:var(--primary); margin-bottom:6px;">📌 ملخص الفروع والأصناف المسجلة خلال فترة التقرير:</div>
                 <div class="table-wrap">
@@ -648,42 +750,12 @@
         </div>
     </div>
 
-    <!-- TAB 3 -->
+    <!-- ========================================== -->
+    <!-- TAB 3: SETTINGS & RULES (إدارة الشروط)     -->
+    <!-- ========================================== -->
     <div id="pane-settings" class="tab-pane">
-        <div class="card" style="border: 2px solid var(--secondary);">
-            <div class="card-header">
-                <span>🏢 إدارة وتسيير الفروع (إضافة، تعديل، وحذف الفروع)</span>
-            </div>
-            <input type="hidden" id="edit-branch-index" value="-1">
-            <div class="dates-grid">
-                <div class="form-group">
-                    <label class="form-label">اسم الفرع:</label>
-                    <input type="text" id="cfg-branch-name" class="form-control" placeholder="مثال: فرع المعادي الرئيسي">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">رقم الفرع:</label>
-                    <input type="text" id="cfg-branch-num" class="form-control" placeholder="مثال: BR-101">
-                </div>
-            </div>
-            <div style="display:flex; gap:8px;">
-                <button type="button" class="btn btn-save" onclick="saveBranchConfig()" style="flex:2; background:var(--secondary);">➕ حفظ الفرع الجديد</button>
-                <button type="button" class="btn" id="btn-cancel-branch" onclick="resetBranchForm()" style="flex:1; background:#CBD5E1; color:#0F172A; display:none;">إلغاء</button>
-            </div>
 
-            <div class="table-wrap" style="margin-top:12px;">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>اسم الفرع</th>
-                            <th>رقم الفرع</th>
-                            <th>تحكم</th>
-                        </tr>
-                    </thead>
-                    <tbody id="settings-branches-tbody"></tbody>
-                </table>
-            </div>
-        </div>
-
+        <!-- Card A: Add / Edit Rule Form -->
         <div class="card">
             <div class="card-header">
                 <span id="form-rule-title">⚙️ إضافة وتعديل شروط الاستلام الاحترافية</span>
@@ -692,7 +764,7 @@
 
             <div class="form-group">
                 <label class="form-label">فئة الصلاحية / اسم الشرط:</label>
-                <input type="text" id="cfg-name" class="form-control" placeholder="مثال: 3 شهور (90 يوم)">
+                <input type="text" id="cfg-name" class="form-control" placeholder="مثال: 3 شهور (90 يوم) أو المنتج صلاحيته أقل من أو يساوي 14 يوم">
             </div>
 
             <div class="dates-grid">
@@ -733,15 +805,16 @@
                 </select>
             </div>
 
+            <!-- Dynamic Manager for "نوع الحد (المقارنة)" (Add / Remove Custom Limit Types) -->
             <div id="limit-types-manager-box" class="limit-types-manager" style="display:none;">
                 <div style="font-size:0.84rem; font-weight:800; color:var(--primary); margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
-                    <span>🛠️ التحكم في قائمة «نوع الحد (المقارنة)»</span>
+                    <span>🛠️ التحكم في قائمة «نوع الحد (المقارنة)» (إضافة / إزالة حسب متطلبات العمل)</span>
                     <button type="button" class="btn-sm" style="background:#CBD5E1; color:#0F172A;" onclick="toggleLimitTypeManager()">إغلاق ✕</button>
                 </div>
                 <div class="dates-grid">
                     <div class="form-group" style="margin-bottom:6px;">
                         <label class="form-label" style="font-size:0.75rem;">مسمى نوع الحد الجديد:</label>
-                        <input type="text" id="new-ltype-label" class="form-control" placeholder="مثال: 3 شهور (90 يوم)">
+                        <input type="text" id="new-ltype-label" class="form-control" placeholder="مثال: 3 شهور (90 يوم) أو لا يتعدى ثلث المدة">
                     </div>
                     <div class="form-group" style="margin-bottom:6px;">
                         <label class="form-label" style="font-size:0.75rem;">طريقة المقارنة الرياضية:</label>
@@ -755,33 +828,56 @@
                         </select>
                     </div>
                 </div>
+                <div class="dates-grid">
+                    <div class="form-group" style="margin-bottom:6px;">
+                        <label class="form-label" style="font-size:0.75rem;">أيام الصلاحية المرتبطة (اختياري للتعبئة التلقائية):</label>
+                        <input type="number" id="new-ltype-totdays" class="form-control" placeholder="مثال: 90 (اختياري)">
+                    </div>
+                    <div class="form-group" style="margin-bottom:6px;">
+                        <label class="form-label" style="font-size:0.75rem;">قيمة الحد التلقائية باليوم (اختياري):</label>
+                        <input type="number" id="new-ltype-limdays" class="form-control" placeholder="مثال: 30 أو 45 (اختياري)">
+                    </div>
+                </div>
                 <div style="display:flex; gap:6px;">
-                    <button type="button" class="btn btn-primary" style="margin-top:4px; padding:9px;" onclick="addNewLimitType()">➕ إضافة نوع الحد</button>
+                    <button type="button" class="btn btn-primary" style="margin-top:4px; padding:9px;" onclick="addNewLimitType()">➕ إضافة إلى قائمة «نوع الحد»</button>
                     <button type="button" class="btn" style="margin-top:4px; padding:9px; background:#475569; color:#fff; width:auto; white-space:nowrap;" onclick="restoreDefaultLimitTypes()">استعادة الافتراضي</button>
                 </div>
-                <div style="margin-top:10px; font-size:0.76rem; font-weight:800; color:var(--text-muted);">المسميات الحالية:</div>
+
+                <div style="margin-top:10px; font-size:0.76rem; font-weight:800; color:var(--text-muted);">المسميات الحالية في قائمة «نوع الحد» (اضغط ✕ للإزالة):</div>
                 <div id="limit-types-tags-list" class="ltype-tags"></div>
             </div>
 
             <div style="display:flex; gap:8px;">
                 <button type="button" class="btn btn-save" id="btn-save-rule" onclick="saveRuleConfig()" style="flex:2;">➕ حفظ وتحديث الشرط في النظام</button>
-                <button type="button" class="btn" id="btn-cancel-edit" onclick="resetRuleForm()" style="flex:1; background:#CBD5E1; color:#0F172A; display:none;">إلغاء</button>
+                <button type="button" class="btn" id="btn-cancel-edit" onclick="resetRuleForm()" style="flex:1; background:#CBD5E1; color:#0F172A; display:none;">إلغاء التعديل</button>
             </div>
         </div>
 
+        <!-- Card B: Quick Direct Access to Manage Limit Types -->
         <div class="card">
             <div class="card-header">
-                <span>📌 جدول الشروط المعرفّة (<span id="rules-count-badge">0</span> شرط)</span>
-                <button type="button" class="btn-sm" style="background:#475569; color:#fff;" onclick="restoreDefaultRules()">🔄 استعادة المعايير</button>
+                <span>🗂️ التحكم السريع في مسميات «نوع الحد (المقارنة)»</span>
+                <button type="button" class="btn-sm" style="background:var(--primary); color:#fff;" onclick="toggleLimitTypeManager()">فتح نافذة الإضافة والحذف ⚙️</button>
+            </div>
+            <p style="font-size:0.76rem; color:var(--text-muted); line-height:1.5;">
+                تمت إضافة المسميات: <b>3 شهور (90 يوم)</b>، <b>6 شهور (180 يوم)</b>، <b>سنة (12 شهر)</b>، <b>سنتين (24 شهر)</b>، <b>3 سنوات (36 شهر)</b>، <b>5 سنوات (60 شهر)</b> بجانب علامات المقارنة (أقل من أو يساوي، أكبر من أو يساوي، نصف المدة...) مع إمكانية إضافة أو حذف أي مسمى في أي وقت.
+            </p>
+        </div>
+
+        <!-- Card C: Master Rules Table -->
+        <div class="card">
+            <div class="card-header">
+                <span>📌 جدول الشروط والمعايير الاحترافية المفعلة (<span id="rules-count-badge">0</span> شرط)</span>
+                <button type="button" class="btn-sm" style="background:#475569; color:#fff;" onclick="restoreDefaultRules()">🔄 استعادة كافة المعايير الأصلية</button>
             </div>
             <div class="table-wrap">
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>فئة الصلاحية / الشرط</th>
+                            <th>فئة الصلاحية / اسم الشرط</th>
                             <th>إجمالي الصلاحية</th>
                             <th>نصف المدة (50%)</th>
-                            <th>نوع الحد والمسموح</th>
+                            <th>نوع الحد والشرط المسموح</th>
                             <th>تحكم</th>
                         </tr>
                     </thead>
@@ -805,7 +901,7 @@
     </label>
     <label for="tab-radio-settings" class="bnav-lbl" onclick="onTabChanged('settings')">
         <span class="bnav-icon">⚙️</span>
-        <span>الإعدادات</span>
+        <span>إدارة الشروط</span>
     </label>
 </nav>
 
@@ -817,36 +913,41 @@
         { code: "gt", label: "أكبر من (>)", op: "gt", autoTotalDays: 0, autoLimitDays: 0 },
         { code: "half", label: "نصف المدة (50% تلقائياً)", op: "half", autoTotalDays: 0, autoLimitDays: 0 },
         { code: "between", label: "بين فترتين", op: "between", autoTotalDays: 0, autoLimitDays: 0 },
-        { code: "maf_sl_half", label: "نصف الصلاحية (Receiving shall be done without exceeding half validity)", op: "half", autoTotalDays: 0, autoLimitDays: 0 },
-        { code: "maf_sl_m2", label: "2 months to expired", op: "lte", autoTotalDays: 0, autoLimitDays: 60 },
-        { code: "maf_sl_m2_5", label: "2.5 months to expired", op: "lte", autoTotalDays: 0, autoLimitDays: 75 },
-        { code: "maf_sl_m3", label: "3 months to expired", op: "lte", autoTotalDays: 0, autoLimitDays: 90 },
-        { code: "maf_sl_m4", label: "4 months to expired", op: "lte", autoTotalDays: 0, autoLimitDays: 120 },
-        { code: "maf_sl_m5", label: "5 months to expired", op: "lte", autoTotalDays: 0, autoLimitDays: 150 }
+        { code: "m3_90", label: "3 شهور (90 يوم)", op: "lte", autoTotalDays: 90, autoLimitDays: 30 },
+        { code: "m6_180", label: "6 شهور (180 يوم)", op: "lte", autoTotalDays: 180, autoLimitDays: 90 },
+        { code: "y1_12m", label: "سنة (12 شهر)", op: "lte", autoTotalDays: 365, autoLimitDays: 182 },
+        { code: "y2_24m", label: "سنتين (24 شهر)", op: "lte", autoTotalDays: 730, autoLimitDays: 365 },
+        { code: "y3_36m", label: "3 سنوات (36 شهر)", op: "lte", autoTotalDays: 1095, autoLimitDays: 547 },
+        { code: "y5_60m", label: "5 سنوات (60 شهر)", op: "lte", autoTotalDays: 1825, autoLimitDays: 912 }
     ];
 
     const INITIAL_RULES = [
-        { id: 201, name: "الذبيحة الكاملة (Whole Carcass) - نفس يوم الذبح أو اليوم التالي كحد أقصى", totVal: 2, totUnit: "days", limitType: "lte", limitVal: 1, limitUnit: "days" },
-        { id: 202, name: "لحوم مبردة تفريغ هواء (Vacuum meat) - خلال 21 يوم من تاريخ الإنتاج", totVal: 98, totUnit: "days", limitType: "lte", limitVal: 21, limitUnit: "days" },
-        { id: 203, name: "لحوم مبردة تفريغ هواء (Vacuum meat) - خلال 30 يوم من تاريخ الإنتاج", totVal: 98, totUnit: "days", limitType: "lte", limitVal: 30, limitUnit: "days" },
-        { id: 204, name: "الدواجن / اللحوم المصنعة (Poultry / Meat Prep) - نفس يوم الذبح أو اليوم التالي", totVal: 5, totUnit: "days", limitType: "lte", limitVal: 1, limitUnit: "days" },
-        { id: 205, name: "صلاحية المنتج (SL) <= 5 أيام - خلال يومين من تاريخ الإنتاج", totVal: 5, totUnit: "days", limitType: "lte", limitVal: 2, limitUnit: "days" },
-        { id: 206, name: "صلاحية المنتج (SL) > 5 أيام وأقل من شهر - خلال 4 أيام من تاريخ الإنتاج", totVal: 30, totUnit: "days", limitType: "lte", limitVal: 4, limitUnit: "days" },
-        { id: 207, name: "صلاحية المنتج (SL) من شهر إلى شهرين - خلال 7 أيام من تاريخ الإنتاج", totVal: 60, totUnit: "days", limitType: "lte", limitVal: 7, limitUnit: "days" },
-        { id: 208, name: "صلاحية المنتج (SL) > 1 شهر - الاستلام بحيث لا يتعدى نصف المدة من تاريخ الإنتاج", totVal: 90, totUnit: "days", limitType: "maf_sl_half", limitVal: 45, limitUnit: "days" },
-        { id: 209, name: "DC & CPU Deliveries: منتج صلاحيته < 6 شهور (متبقي 2 شهر على الانتهاء)", totVal: 180, totUnit: "days", limitType: "maf_sl_m2", limitVal: 60, limitUnit: "days" },
-        { id: 210, name: "DC & CPU Deliveries: منتج صلاحيته < 9 شهور (متبقي 2.5 شهر على الانتهاء)", totVal: 270, totUnit: "days", limitType: "maf_sl_m2_5", limitVal: 75, limitUnit: "days" },
-        { id: 211, name: "DC & CPU Deliveries: منتج صلاحيته < 12 شهر (متبقي 3 أشهر على الانتهاء)", totVal: 365, totUnit: "days", limitType: "maf_sl_m3", limitVal: 90, limitUnit: "days" },
-        { id: 212, name: "DC & CPU Deliveries: منتج صلاحيته < 18 شهر (متبقي 4 أشهر على الانتهاء)", totVal: 540, totUnit: "days", limitType: "maf_sl_m4", limitVal: 120, limitUnit: "days" },
-        { id: 213, name: "DC & CPU Deliveries: منتج صلاحيته > 18 شهر (متبقي 5 أشهر على الانتهاء)", totVal: 730, totUnit: "days", limitType: "maf_sl_m5", limitVal: 150, limitUnit: "days" },
-        { id: 214, name: "Chilled Vacuum Meat with validity 49 days (CPU Sourcing) - خلال 32 يوم من الإنتاج أو قبل الانتهاء بـ 17 يوم", totVal: 49, totUnit: "days", limitType: "lte", limitVal: 32, limitUnit: "days" }
+        { id: 101, name: "3 أيام (عيش طازج ومخبوزات يومية)", totVal: 3, totUnit: "days", limitType: "lte", limitVal: 1, limitUnit: "days" },
+        { id: 102, name: "7 أيام (فريش ومخبوزات قصيرة الأجل)", totVal: 7, totUnit: "days", limitType: "lte", limitVal: 2, limitUnit: "days" },
+        { id: 103, name: "3 شهور (90 يوم)", totVal: 90, totUnit: "days", limitType: "m3_90", limitVal: 30, limitUnit: "days" },
+        { id: 104, name: "6 شهور (180 يوم)", totVal: 180, totUnit: "days", limitType: "m6_180", limitVal: 90, limitUnit: "days" },
+        { id: 105, name: "سنة (12 شهر)", totVal: 365, totUnit: "days", limitType: "y1_12m", limitVal: 182, limitUnit: "days" },
+        { id: 106, name: "سنتين (24 شهر)", totVal: 730, totUnit: "days", limitType: "y2_24m", limitVal: 365, limitUnit: "days" },
+        { id: 107, name: "3 سنوات (36 شهر)", totVal: 1095, totUnit: "days", limitType: "y3_36m", limitVal: 547, limitUnit: "days" },
+        { id: 108, name: "5 سنوات (60 شهر)", totVal: 1825, totUnit: "days", limitType: "y5_60m", limitVal: 912, limitUnit: "days" },
+        { id: 1, name: "المنتج صلاحيته أقل من أو يساوي 5 أيام", totVal: 5, totUnit: "days", limitType: "lte", limitVal: 1, limitUnit: "days" },
+        { id: 2, name: "المنتج صلاحيته أقل من أو يساوي 14 يوم", totVal: 14, totUnit: "days", limitType: "lte", limitVal: 3, limitUnit: "days" },
+        { id: 3, name: "المنتج صلاحيته أو يساوي شهر (30 يوم)", totVal: 30, totUnit: "days", limitType: "lte", limitVal: 7, limitUnit: "days" },
+        { id: 4, name: "صلاحية المنتج أكبر من شهر", totVal: 30, totUnit: "days", limitType: "gt", limitVal: 7, limitUnit: "days" },
+        { id: 5, name: "المنتج صلاحيته أقل من أو يساوي 6 شهور", totVal: 180, totUnit: "days", limitType: "lte", limitVal: 90, limitUnit: "days" },
+        { id: 6, name: "المنتج صلاحيته أكبر من 6 شهور وأقل من أو يساوي 9 شهور", totVal: 270, totUnit: "days", limitType: "lte", limitVal: 120, limitUnit: "days" },
+        { id: 7, name: "المنتج صلاحيته أكبر من 9 شهور وأقل من أو يساوي 12 شهر", totVal: 365, totUnit: "days", limitType: "lte", limitVal: 182, limitUnit: "days" },
+        { id: 8, name: "المنتج صلاحيته أكبر من 12 شهر وأقل من أو يساوي 18 شهر", totVal: 540, totUnit: "days", limitType: "lte", limitVal: 270, limitUnit: "days" },
+        { id: 9, name: "المنتج صلاحيته أكبر من 18 شهر", totVal: 730, totUnit: "days", limitType: "lte", limitVal: 365, limitUnit: "days" },
+        { id: 10, name: "منتجات الدواجن/اللحوم المصنعة الخاصة بالموردين", totVal: 30, totUnit: "days", limitType: "lte", limitVal: 5, limitUnit: "days" },
+        { id: 11, name: "اللحوم المعبأة تحت تفريغ الهواء ذو الصلاحية 98 يوماً توريد مباشر", totVal: 98, totUnit: "days", limitType: "lte", limitVal: 49, limitUnit: "days" },
+        { id: 12, name: "اللحوم المعبأة تحت تفريغ الهواء ذو الصلاحية 49 يوماً توريد مباشر", totVal: 49, totUnit: "days", limitType: "lte", limitVal: 24, limitUnit: "days" }
     ];
 
     let limitTypes = JSON.parse(JSON.stringify(DEFAULT_LIMIT_TYPES));
     let rules = JSON.parse(JSON.stringify(INITIAL_RULES));
-    let branches = INITIAL_BRANCHES;
     let dailyLogs = [];
-    let selectedRuleIndex = 0;
+    let selectedRuleIndex = 4;
     let activeDateType = 'prod';
     let currentResult = null;
     let reportMode = 'all';
@@ -899,11 +1000,6 @@
         window.scrollTo(0, 0);
     }
 
-    function switchToSettingsTab() {
-        document.getElementById('tab-radio-settings').checked = true;
-        window.scrollTo(0, 0);
-    }
-
     function getLimitTypeObj(code) {
         for (var i = 0; i < limitTypes.length; i++) {
             if (limitTypes[i].code === code) return limitTypes[i];
@@ -913,19 +1009,15 @@
 
     function loadData() {
         try {
-            var lt = localStorage.getItem('pro_limit_types_maf_v10_1');
+            var lt = localStorage.getItem('pro_limit_types_v9');
             if (lt) limitTypes = JSON.parse(lt);
         } catch (e) {}
         try {
-            var r = localStorage.getItem('pro_shelf_rules_maf_v10_1');
+            var r = localStorage.getItem('pro_shelf_rules_v9');
             if (r) rules = JSON.parse(r);
         } catch (e) {}
         try {
-            var b = localStorage.getItem('pro_branches_v10_1');
-            if (b) branches = JSON.parse(b);
-        } catch (e) {}
-        try {
-            var l = localStorage.getItem('pro_daily_logs_v10_1');
+            var l = localStorage.getItem('pro_daily_logs_v9');
             if (l) {
                 dailyLogs = JSON.parse(l);
             } else {
@@ -938,28 +1030,73 @@
 
     function saveData() {
         try {
-            localStorage.setItem('pro_limit_types_maf_v10_1', JSON.stringify(limitTypes));
-            localStorage.setItem('pro_shelf_rules_maf_v10_1', JSON.stringify(rules));
-            localStorage.setItem('pro_branches_v10_1', JSON.stringify(branches));
-            localStorage.setItem('pro_daily_logs_v10_1', JSON.stringify(dailyLogs));
+            localStorage.setItem('pro_limit_types_v9', JSON.stringify(limitTypes));
+            localStorage.setItem('pro_shelf_rules_v9', JSON.stringify(rules));
+            localStorage.setItem('pro_daily_logs_v9', JSON.stringify(dailyLogs));
         } catch (e) {}
     }
 
     function seedSampleLogs() {
         var today = toISODate(new Date());
+        var prevMonthDay = addDaysToISO(today, -32);
         dailyLogs = [
             {
                 id: 1,
                 recDate: today,
-                branchInfo: "فرع كارفور المعادي (BR-101)",
-                barcode: "6221155012345",
-                prodName: "الذبيحة الكاملة (Whole Carcass)",
-                ruleName: "الذبيحة الكاملة (Whole Carcass) - نفس يوم الذبح أو اليوم التالي كحد أقصى",
-                prodDate: today,
-                halfDate: addDaysToISO(today, 1),
+                branchName: "فرع المعادي الرئيسي",
+                branchNum: "BR-101",
+                prodName: "أرز أبيض مصري 5 كجم (مضارب الأرز)",
+                ruleName: "سنة (12 شهر)",
+                prodDate: addDaysToISO(today, -110),
+                halfDate: addDaysToISO(today, 72),
+                cutoffDate: addDaysToISO(today, 72),
+                expDate: addDaysToISO(today, 255),
+                elapsed: 110,
+                status: "accept",
+                decisionText: "✅ مقبول للاستلام"
+            },
+            {
+                id: 2,
+                recDate: today,
+                branchName: "فرع مدينة نصر",
+                branchNum: "BR-102",
+                prodName: "لبن مبرد كامل الدسم (مزارع الخير)",
+                ruleName: "المنتج صلاحيته أقل من أو يساوي 14 يوم",
+                prodDate: addDaysToISO(today, -2),
+                halfDate: addDaysToISO(today, 5),
                 cutoffDate: addDaysToISO(today, 1),
-                expDate: addDaysToISO(today, 2),
-                elapsed: 0,
+                expDate: addDaysToISO(today, 12),
+                elapsed: 2,
+                status: "accept",
+                decisionText: "✅ مقبول للاستلام"
+            },
+            {
+                id: 3,
+                recDate: today,
+                branchName: "فرع الإسكندرية",
+                branchNum: "BR-201",
+                prodName: "لحوم مبردة تفريغ هواء (توريد مباشر)",
+                ruleName: "اللحوم المعبأة تحت تفريغ الهواء ذو الصلاحية 98 يوماً توريد مباشر",
+                prodDate: addDaysToISO(today, -55),
+                halfDate: addDaysToISO(today, -6),
+                cutoffDate: addDaysToISO(today, -6),
+                expDate: addDaysToISO(today, 43),
+                elapsed: 55,
+                status: "reject",
+                decisionText: "❌ مرفوض (تعدى الشرط)"
+            },
+            {
+                id: 4,
+                recDate: prevMonthDay,
+                branchName: "فرع المعادي الرئيسي",
+                branchNum: "BR-101",
+                prodName: "زيت عباد الشمس 2 لتر (شركة الزيوت)",
+                ruleName: "سنتين (24 شهر)",
+                prodDate: addDaysToISO(prevMonthDay, -200),
+                halfDate: addDaysToISO(prevMonthDay, 165),
+                cutoffDate: addDaysToISO(prevMonthDay, 165),
+                expDate: addDaysToISO(prevMonthDay, 530),
+                elapsed: 200,
                 status: "accept",
                 decisionText: "✅ مقبول للاستلام"
             }
@@ -967,123 +1104,9 @@
         saveData();
     }
 
-    function renderBranchesDropdowns() {
-        var sel1 = document.getElementById('q-branch-select');
-        var sel2 = document.getElementById('log-add-branch-select');
-        var sel3 = document.getElementById('rep-branch-filter');
-
-        var cur1 = sel1 ? sel1.value : '';
-        var cur2 = sel2 ? sel2.value : '';
-        var cur3 = sel3 ? sel3.value : 'all';
-
-        if (sel1) sel1.innerHTML = '';
-        if (sel2) sel2.innerHTML = '';
-        if (sel3) {
-            sel3.innerHTML = '<option value="all">🌐 كل الفروع (عرض عام)</option>';
-        }
-
-        for (var i = 0; i < branches.length; i++) {
-            var br = branches[i];
-            var displayText = br.name + ' (' + br.num + ')';
-
-            if (sel1) {
-                var opt1 = document.createElement('option');
-                opt1.value = displayText;
-                opt1.textContent = displayText;
-                sel1.appendChild(opt1);
-            }
-            if (sel2) {
-                var opt2 = document.createElement('option');
-                opt2.value = displayText;
-                opt2.textContent = displayText;
-                sel2.appendChild(opt2);
-            }
-            if (sel3) {
-                var opt3 = document.createElement('option');
-                opt3.value = br.name;
-                opt3.textContent = displayText;
-                sel3.appendChild(opt3);
-            }
-        }
-
-        if (cur1 && sel1) sel1.value = cur1;
-        if (cur2 && sel2) sel2.value = cur2;
-        if (cur3 && sel3) sel3.value = cur3;
-
-        renderBranchesTable();
-    }
-
-    function renderBranchesTable() {
-        var tbody = document.getElementById('settings-branches-tbody');
-        if (!tbody) return;
-        tbody.innerHTML = '';
-        for (var i = 0; i < branches.length; i++) {
-            var b = branches[i];
-            var tr = document.createElement('tr');
-            tr.innerHTML =
-                '<td style="text-align:right; font-weight:800;">' + b.name + '</td>' +
-                '<td><b>' + b.num + '</b></td>' +
-                '<td><div style="display:flex; gap:4px; justify-content:center;"><button class="btn-sm" style="background:#DBEAFE; color:#1E40AF;" onclick="editBranch(' + i + ')">تعديل</button><button class="btn-sm" style="background:#FEE2E2; color:#991B1B;" onclick="deleteBranch(' + i + ')">✕</button></div></td>';
-            tbody.appendChild(tr);
-        }
-    }
-
-    function saveBranchConfig() {
-        var editIdx = Number(document.getElementById('edit-branch-index').value);
-        var name = document.getElementById('cfg-branch-name').value.trim();
-        var num = document.getElementById('cfg-branch-num').value.trim();
-
-        if (!name || !num) {
-            alert('يرجى كتابة اسم الفرع ورقم الفرع.');
-            return;
-        }
-
-        if (editIdx >= 0) {
-            branches[editIdx].name = name;
-            branches[editIdx].num = num;
-        } else {
-            branches.push({ id: Date.now(), name: name, num: num });
-        }
-
-        saveData();
-        resetBranchForm();
-        renderBranchesDropdowns();
-        showToast('✅ تم حفظ الفرع بنجاح');
-    }
-
-    function editBranch(idx) {
-        var b = branches[idx];
-        document.getElementById('edit-branch-index').value = idx;
-        document.getElementById('cfg-branch-name').value = b.name;
-        document.getElementById('cfg-branch-num').value = b.num;
-        document.getElementById('btn-cancel-branch').style.display = 'inline-flex';
-        window.scrollTo(0, 0);
-    }
-
-    function resetBranchForm() {
-        document.getElementById('edit-branch-index').value = -1;
-        document.getElementById('cfg-branch-name').value = '';
-        document.getElementById('cfg-branch-num').value = '';
-        document.getElementById('btn-cancel-branch').style.display = 'none';
-    }
-
-    function deleteBranch(idx) {
-        if (branches.length <= 1) {
-            alert('يجب بقاء فرع واحد على الأقل في النظام.');
-            return;
-        }
-        if (confirm('حذف هذا الفرع؟')) {
-            branches.splice(idx, 1);
-            saveData();
-            renderBranchesDropdowns();
-            showToast('🗑️ تم حذف الفرع');
-        }
-    }
-
     function renderLimitTypesUI() {
         var sel = document.getElementById('cfg-limit-type');
-        var currentVal = sel ? sel.value : '';
-        if (!sel) return;
+        var currentVal = sel.value;
         sel.innerHTML = '';
         for (var i = 0; i < limitTypes.length; i++) {
             var lt = limitTypes[i];
@@ -1097,14 +1120,13 @@
         }
 
         var tagsContainer = document.getElementById('limit-types-tags-list');
-        if (!tagsContainer) return;
         tagsContainer.innerHTML = '';
         for (var j = 0; j < limitTypes.length; j++) {
             var item = limitTypes[j];
             var span = document.createElement('span');
             span.className = 'ltype-tag';
             span.innerHTML = '<span>' + item.label + '</span>' +
-                '<button type="button" title="حذف" onclick="deleteLimitType(' + j + ')">✕</button>';
+                '<button type="button" title="حذف هذا النوع" onclick="deleteLimitType(' + j + ')">✕</button>';
             tagsContainer.appendChild(span);
         }
     }
@@ -1146,36 +1168,62 @@
     function addNewLimitType() {
         var lbl = document.getElementById('new-ltype-label').value.trim();
         var op = document.getElementById('new-ltype-op').value;
-        if (!lbl) { alert('اكتب المسمى'); return; }
+        var autoTot = Number(document.getElementById('new-ltype-totdays').value) || 0;
+        var autoLim = Number(document.getElementById('new-ltype-limdays').value) || 0;
+
+        if (!lbl) {
+            alert('يرجى كتابة مسمى نوع الحد الجديد.');
+            return;
+        }
+
         var newCode = 'custom_' + Date.now();
-        limitTypes.push({ code: newCode, label: lbl, op: op, autoTotalDays: 0, autoLimitDays: 0 });
+        limitTypes.push({
+            code: newCode,
+            label: lbl,
+            op: op,
+            autoTotalDays: autoTot,
+            autoLimitDays: autoLim
+        });
+
         saveData();
         renderLimitTypesUI();
         document.getElementById('cfg-limit-type').value = newCode;
+        onLimitTypeSelectChange();
+
         document.getElementById('new-ltype-label').value = '';
-        showToast('✅ تمت الإضافة');
+        document.getElementById('new-ltype-totdays').value = '';
+        document.getElementById('new-ltype-limdays').value = '';
+        showToast('✅ تمت إضافة "' + lbl + '" إلى قائمة نوع الحد!');
     }
 
     function deleteLimitType(idx) {
-        if (limitTypes.length <= 1) return;
-        limitTypes.splice(idx, 1);
-        saveData();
-        renderLimitTypesUI();
-        renderSettingsTable();
+        if (limitTypes.length <= 1) {
+            alert('يجب الإبقاء على نوع حد واحد على الأقل.');
+            return;
+        }
+        var target = limitTypes[idx];
+        if (confirm('هل تريد إزالة "' + target.label + '"؟')) {
+            limitTypes.splice(idx, 1);
+            saveData();
+            renderLimitTypesUI();
+            renderSettingsTable();
+            showToast('🗑️ تم حذف نوع الحد');
+        }
     }
 
     function restoreDefaultLimitTypes() {
-        limitTypes = JSON.parse(JSON.stringify(DEFAULT_LIMIT_TYPES));
-        saveData();
-        renderLimitTypesUI();
-        renderSettingsTable();
-        showToast('🔄 تمت الاستعادة');
+        if (confirm('استعادة أنواع الحدود الافتراضية؟')) {
+            limitTypes = JSON.parse(JSON.stringify(DEFAULT_LIMIT_TYPES));
+            saveData();
+            renderLimitTypesUI();
+            renderSettingsTable();
+            showToast('🔄 تمت الاستعادة بنجاح');
+        }
     }
 
     function renderCategoryDropdown() {
         if (selectedRuleIndex >= rules.length) selectedRuleIndex = 0;
         var sel = document.getElementById('q-category-select');
-        if (!sel) return;
         sel.innerHTML = '';
         for (var i = 0; i < rules.length; i++) {
             var r = rules[i];
@@ -1187,7 +1235,6 @@
         sel.value = selectedRuleIndex;
 
         var logSel = document.getElementById('log-add-cat');
-        if (!logSel) return;
         logSel.innerHTML = '';
         for (var k = 0; k < rules.length; k++) {
             var rk = rules[k];
@@ -1361,14 +1408,13 @@
         }
 
         var itemName = document.getElementById('q-item-name').value.trim();
-        var barcodeVal = document.getElementById('q-barcode').value.trim();
-        var selectedBranchFull = document.getElementById('q-branch-select').value;
-        
+        var bName = document.getElementById('q-branch-name').value.trim();
+        var bNum = document.getElementById('q-branch-num').value.trim();
         currentResult = {
             id: Date.now(),
             recDate: recDate,
-            branchInfo: selectedBranchFull || 'فرع عام',
-            barcode: barcodeVal || '-',
+            branchName: bName || 'فرع عام',
+            branchNum: bNum || '-',
             prodName: itemName || rule.name,
             ruleName: rule.name,
             prodDate: prodDate,
@@ -1385,7 +1431,6 @@
 
     function renderQuickReferenceTable(recDate) {
         var tbody = document.getElementById('quick-ref-tbody');
-        if (!tbody) return;
         tbody.innerHTML = '';
         for (var i = 0; i < rules.length; i++) {
             var r = rules[i];
@@ -1410,22 +1455,22 @@
         dailyLogs.unshift(copy);
         saveData();
         document.getElementById('q-item-name').value = '';
-        document.getElementById('q-barcode').value = '';
         renderDailyLog();
         showToast('✅ تم تسجيل الفحص في السجل بنجاح');
     }
 
     function directAddFromLogTab() {
-        var branchFull = document.getElementById('log-add-branch-select').value;
-        var barcodeVal = document.getElementById('log-add-barcode').value.trim();
+        var bName = document.getElementById('log-add-bname').value.trim();
+        var bNum = document.getElementById('log-add-bnum').value.trim();
         var name = document.getElementById('log-add-name').value.trim();
+        var sup = document.getElementById('log-add-supplier').value.trim();
         var catIdx = Number(document.getElementById('log-add-cat').value);
         var pDate = document.getElementById('log-add-pdate').value;
         var recDate = document.getElementById('q-receive-date').value || toISODate(new Date());
         var rule = rules[catIdx];
 
         if (!pDate || !rule) {
-            alert('يرجى اختيار الفئة وتاريخ الإنتاج.');
+            alert('يرجى اختيار الفئة وتاريخ الإنتاج المدون على المنتج.');
             return;
         }
 
@@ -1440,12 +1485,13 @@
         var elapsed = diffDaysISO(recDate, pDate);
         var isAcc = (elapsed >= 0 && elapsed <= limD);
 
+        var fullTitle = name ? (sup ? (name + ' (' + sup + ')') : name) : rule.name;
         dailyLogs.unshift({
             id: Date.now(),
             recDate: recDate,
-            branchInfo: branchFull || 'فرع عام',
-            barcode: barcodeVal || '-',
-            prodName: name || rule.name,
+            branchName: bName || 'فرع عام',
+            branchNum: bNum || '-',
+            prodName: fullTitle,
             ruleName: rule.name,
             prodDate: pDate,
             halfDate: halfDate,
@@ -1457,10 +1503,12 @@
         });
 
         saveData();
-        document.getElementById('log-add-barcode').value = '';
+        document.getElementById('log-add-bname').value = '';
+        document.getElementById('log-add-bnum').value = '';
         document.getElementById('log-add-name').value = '';
+        document.getElementById('log-add-supplier').value = '';
         renderDailyLog();
-        showToast('✅ تمت الإضافة بنجاح!');
+        showToast('✅ تمت الإضافة إلى السجل بنجاح!');
     }
 
     function populateYearSelect() {
@@ -1507,7 +1555,6 @@
         var dVal = document.getElementById('rep-date-input') ? document.getElementById('rep-date-input').value : '';
         var mVal = document.getElementById('rep-month-input') ? document.getElementById('rep-month-input').value : '';
         var yVal = document.getElementById('rep-year-input') ? document.getElementById('rep-year-input').value : '';
-        var bFilter = document.getElementById('rep-branch-filter') ? document.getElementById('rep-branch-filter').value : 'all';
         var searchVal = document.getElementById('rep-search-item') ? document.getElementById('rep-search-item').value.trim().toLowerCase() : '';
         var statusVal = document.getElementById('rep-status-filter') ? document.getElementById('rep-status-filter').value : 'all';
 
@@ -1524,15 +1571,14 @@
                 matchTime = (rDate.substring(0, 4) === yVal);
             }
 
-            var matchBranch = (bFilter === 'all') || ((it.branchInfo || '').indexOf(bFilter) !== -1);
             var matchStatus = (statusVal === 'all') || (it.status === statusVal);
             var matchSearch = true;
             if (searchVal) {
-                var combined = ((it.branchInfo || '') + ' ' + (it.barcode || '') + ' ' + (it.prodName || '') + ' ' + (it.ruleName || '')).toLowerCase();
+                var combined = ((it.branchName || '') + ' ' + (it.branchNum || '') + ' ' + (it.prodName || '') + ' ' + (it.ruleName || '')).toLowerCase();
                 matchSearch = (combined.indexOf(searchVal) !== -1);
             }
 
-            if (matchTime && matchBranch && matchStatus && matchSearch) {
+            if (matchTime && matchStatus && matchSearch) {
                 filtered.push(it);
             }
         }
@@ -1552,7 +1598,6 @@
     function renderDailyLog() {
         document.getElementById('nav-log-count').innerText = dailyLogs.length;
         populateYearSelect();
-        renderBranchesDropdowns();
 
         var filtered = getFilteredReportLogs();
         var periodTitle = getReportPeriodLabel();
@@ -1568,7 +1613,7 @@
             var item = filtered[i];
             if (item.status === 'accept') acc++; else rej++;
 
-            var bKey = item.branchInfo || 'فرع عام';
+            var bKey = (item.branchName || 'فرع عام') + (item.branchNum ? ' (' + item.branchNum + ')' : '');
             if (!branchStats[bKey]) {
                 branchStats[bKey] = { total: 0, acc: 0, rej: 0 };
             }
@@ -1615,15 +1660,15 @@
             var it = filtered[j];
             var card = document.createElement('div');
             card.className = 'log-card ' + it.status;
+            var bInfo = (it.branchName ? it.branchName : 'فرع عام') + (it.branchNum ? ' (' + it.branchNum + ')' : '');
             card.innerHTML =
                 '<div class="log-card-top"><span>📦 ' + it.prodName + '</span><span style="color:' + (it.status==='accept'?'#16A34A':'#DC2626') + ';">' + it.decisionText + '</span></div>' +
                 '<div class="log-card-body">' +
-                '• 🏢 الفرع: <b style="color:var(--primary);">' + (it.branchInfo || 'فرع عام') + '</b><br>' +
-                '• 📷 الباركود: <b>' + (it.barcode || '-') + '</b> | الصنف: <b style="color:var(--primary);">' + it.prodName + '</b><br>' +
+                '• 🏢 الفرع: <b style="color:var(--primary);">' + bInfo + '</b><br>' +
                 '• تاريخ الاستلام: <b>' + it.recDate + '</b> | المعيار: <b>' + it.ruleName + '</b><br>' +
                 '• تاريخ الإنتاج المدون: <b>' + it.prodDate + '</b> | الانتهاء: <b>' + it.expDate + '</b><br>' +
                 '• 📅 تاريخ نصف المدة (50%): <b style="color:#9A3412;">' + it.halfDate + '</b><br>' +
-                '• 🛑 آخر تاريخ مسموح للاستلام: <b style="color:#9A3412;">' + it.cutoffDate + '</b><br>' +
+                '• 🛑 آخر تاريخ مسموح للاستلام (حد الرفض): <b style="color:#9A3412;">' + it.cutoffDate + '</b><br>' +
                 '• الأيام المنقضية: <b>' + it.elapsed + ' يوم</b>' +
                 '</div>' +
                 '<div style="text-align:left; margin-top:5px;"><button class="btn-sm" style="background:#FEE2E2; color:#991B1B;" onclick="deleteLog(' + it.id + ')">حذف ✕</button></div>';
@@ -1641,7 +1686,7 @@
     function loadSampleLogs() {
         seedSampleLogs();
         setReportMode('all');
-        showToast('✅ تم تحميل بيانات تجريبية');
+        showToast('✅ تم تحميل بيانات تجريبية للفروع');
     }
 
     function clearAllLogs() {
@@ -1666,11 +1711,11 @@
             var bgStatus = isAcc ? '#DCFCE7' : '#FEE2E2';
             var colorStatus = isAcc ? '#14532D' : '#7F1D1D';
             var rowBg = (i % 2 === 0) ? '#FFFFFF' : '#F8FAFC';
+            var bNameStr = (r.branchName || 'فرع عام') + (r.branchNum ? ' (' + r.branchNum + ')' : '');
             rowsHtml += '<tr style="background:' + rowBg + '; text-align:center; font-family:Arial, sans-serif; font-size:11pt;">' +
                 '<td style="border:1px solid #94A3B8; padding:6px;">' + (i + 1) + '</td>' +
                 '<td style="border:1px solid #94A3B8; padding:6px; mso-number-format:\'\@\';">' + r.recDate + '</td>' +
-                '<td style="border:1px solid #94A3B8; padding:6px; font-weight:bold;">' + (r.branchInfo || 'فرع عام') + '</td>' +
-                '<td style="border:1px solid #94A3B8; padding:6px; mso-number-format:\'\@\';">' + (r.barcode || '-') + '</td>' +
+                '<td style="border:1px solid #94A3B8; padding:6px; font-weight:bold;">' + bNameStr + '</td>' +
                 '<td style="border:1px solid #94A3B8; padding:6px; font-weight:bold; text-align:right;">' + r.prodName + '</td>' +
                 '<td style="border:1px solid #94A3B8; padding:6px; text-align:right;">' + r.ruleName + '</td>' +
                 '<td style="border:1px solid #94A3B8; padding:6px; mso-number-format:\'\@\';">' + r.prodDate + '</td>' +
@@ -1694,18 +1739,17 @@
             '</head><body dir="rtl" style="font-family:Arial, sans-serif;">' +
             '<table dir="rtl" border="1" style="border-collapse:collapse; width:100%;">' +
             '<thead>' +
-            '<tr><th colspan="12" style="background:#1B365D; color:#FFFFFF; font-size:14pt; padding:10px; text-align:center;">' + periodTitle + '</th></tr>' +
-            '<tr><th colspan="12" style="background:#F1F5F9; color:#0F172A; font-size:11pt; padding:8px; text-align:center;">إجمالي الشحنات: ' + filtered.length + ' | مقبول: ' + acc + ' | مرفوض: ' + rej + ' | نسبة القبول: ' + rate + '%</th></tr>' +
+            '<tr><th colspan="11" style="background:#1B365D; color:#FFFFFF; font-size:14pt; padding:10px; text-align:center;">' + periodTitle + '</th></tr>' +
+            '<tr><th colspan="11" style="background:#F1F5F9; color:#0F172A; font-size:11pt; padding:8px; text-align:center;">إجمالي الشحنات: ' + filtered.length + ' | مقبول: ' + acc + ' | مرفوض: ' + rej + ' | نسبة القبول: ' + rate + '%</th></tr>' +
             '<tr style="background:#2C3E50; color:#FFFFFF; font-size:11pt; font-weight:bold; text-align:center;">' +
             '<th style="border:1px solid #94A3B8; padding:8px;">م</th>' +
             '<th style="border:1px solid #94A3B8; padding:8px;">تاريخ الاستلام</th>' +
-            '<th style="border:1px solid #94A3B8; padding:8px;">الفرع</th>' +
-            '<th style="border:1px solid #94A3B8; padding:8px;">باركود المنتج</th>' +
+            '<th style="border:1px solid #94A3B8; padding:8px;">الفرع (الاسم ورقم الفرع)</th>' +
             '<th style="border:1px solid #94A3B8; padding:8px;">اسم الصنف والمورد</th>' +
-            '<th style="border:1px solid #94A3B8; padding:8px;">فئة الصلاحية / الشرط</th>' +
-            '<th style="border:1px solid #94A3B8; padding:8px;">تاريخ الإنتاج</th>' +
+            '<th style="border:1px solid #94A3B8; padding:8px;">فئة الصلاحية / الشرط المطبق</th>' +
+            '<th style="border:1px solid #94A3B8; padding:8px;">تاريخ الإنتاج المدون على المنتج</th>' +
             '<th style="border:1px solid #94A3B8; padding:8px;">تاريخ نصف المدة (50%)</th>' +
-            '<th style="border:1px solid #94A3B8; padding:8px;">آخر تاريخ للاستلام (حد الرفض)</th>' +
+            '<th style="border:1px solid #94A3B8; padding:8px;">آخر تاريخ مسموح للاستلام (حد الرفض)</th>' +
             '<th style="border:1px solid #94A3B8; padding:8px;">تاريخ انتهاء الصلاحية</th>' +
             '<th style="border:1px solid #94A3B8; padding:8px;">الأيام المنقضية</th>' +
             '<th style="border:1px solid #94A3B8; padding:8px;">قرار الاستلام النهائي</th>' +
@@ -1804,7 +1848,7 @@
         if (confirm('استعادة كافة المعايير الأصلية؟')) {
             limitTypes = JSON.parse(JSON.stringify(DEFAULT_LIMIT_TYPES));
             rules = JSON.parse(JSON.stringify(INITIAL_RULES));
-            selectedRuleIndex = 0;
+            selectedRuleIndex = 4;
             saveData();
             renderLimitTypesUI();
             renderCategoryDropdown();
@@ -1817,7 +1861,6 @@
     function renderSettingsTable() {
         document.getElementById('rules-count-badge').innerText = rules.length;
         var tbody = document.getElementById('settings-rules-tbody');
-        if (!tbody) return;
         tbody.innerHTML = '';
         for (var i = 0; i < rules.length; i++) {
             var r = rules[i];
@@ -1840,14 +1883,15 @@
             loadData();
             var today = toISODate(new Date());
             document.getElementById('q-receive-date').value = today;
-            document.getElementById('q-product-date').value = addDaysToISO(today, -1);
-            document.getElementById('log-add-pdate').value = addDaysToISO(today, -1);
+            document.getElementById('q-product-date').value = addDaysToISO(today, -120);
+            if (document.getElementById('q-branch-name')) document.getElementById('q-branch-name').value = 'فرع المعادي الرئيسي';
+            if (document.getElementById('q-branch-num')) document.getElementById('q-branch-num').value = 'BR-101';
+            document.getElementById('log-add-pdate').value = addDaysToISO(today, -10);
             if (document.getElementById('rep-date-input')) document.getElementById('rep-date-input').value = today;
             if (document.getElementById('rep-month-input')) document.getElementById('rep-month-input').value = today.substring(0, 7);
             populateYearSelect();
             setReportMode('daily');
             renderLimitTypesUI();
-            renderBranchesDropdowns();
             renderCategoryDropdown();
             renderSettingsTable();
             runCalculation();
