@@ -452,11 +452,11 @@
 <div id="toast-msg"></div>
 
 <header>
-    <h1>📦 منظومة فحص واستلام البضائع الاحترافية (إصدار الفروع v9)</h1>
-    <p>مراقبة شرط نصف المدة، إدارة الفروع، التقارير الذكية، وتاريخ الإنتاج أو الانتهاء</p>
+    <h1>📦 منظومة فحص واستلام البضائع الاحترافية</h1>
+    <p>مراقبة شرط نصف المدة، إدارة الشروط وأنواع الحدود، وتاريخ الإنتاج أو الانتهاء</p>
     <div class="top-tabs">
         <label for="tab-radio-quick" class="top-tab-lbl" onclick="onTabChanged('quick')">⚡ الاستعلام السريع</label>
-        <label for="tab-radio-log" class="top-tab-lbl" onclick="onTabChanged('log')">📋 سجل اليوم والفروع <span class="badge-count" id="nav-log-count">0</span></label>
+        <label for="tab-radio-log" class="top-tab-lbl" onclick="onTabChanged('log')">📋 سجل اليوم <span class="badge-count" id="nav-log-count">0</span></label>
         <label for="tab-radio-settings" class="top-tab-lbl" onclick="onTabChanged('settings')">⚙️ إدارة الشروط</label>
     </div>
 </header>
@@ -468,20 +468,6 @@
     <!-- ========================================== -->
     <div id="pane-quick" class="tab-pane">
         <div class="card">
-            <div style="background:#E2E8F0; padding:10px; border-radius:10px; margin-bottom:12px; border:1.5px solid #CBD5E1;">
-                <div style="font-size:0.82rem; font-weight:800; color:var(--primary); margin-bottom:6px;">🏢 بيانات الفرع وموقع الفحص:</div>
-                <div class="dates-grid">
-                    <div class="form-group" style="margin-bottom:0;">
-                        <label class="form-label" style="font-size:0.76rem;">اسم الفرع:</label>
-                        <input type="text" id="q-branch-name" class="form-control" placeholder="مثال: فرع المعادي الرئيسي" style="background:#FFF;">
-                    </div>
-                    <div class="form-group" style="margin-bottom:0;">
-                        <label class="form-label" style="font-size:0.76rem;">رقم الفرع:</label>
-                        <input type="text" id="q-branch-num" class="form-control" placeholder="مثال: BR-101" style="background:#FFF;">
-                    </div>
-                </div>
-            </div>
-
             <div id="category-pills-container" style="display:none;"></div>
             <div class="form-group" style="margin-top:2px;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
@@ -529,7 +515,7 @@
 
             <div class="dates-grid">
                 <div class="form-group" style="margin-bottom:0;">
-                    <label class="form-label">تاريخ الاستلام الفعلي بالفرع:</label>
+                    <label class="form-label">تاريخ الاستلام الفعلي:</label>
                     <input type="date" id="q-receive-date" class="form-control" onchange="runCalculation()">
                 </div>
                 <div class="form-group" style="margin-bottom:0;">
@@ -592,7 +578,7 @@
             <div id="res-rule-note" style="margin-top:10px; padding:8px; background:#F1F5F9; border-radius:6px; font-size:0.78rem; font-weight:700; text-align:center; color:var(--primary);"></div>
 
             <button type="button" class="btn btn-save" onclick="saveInspectionToLog()">
-                💾 تسجيل هذا الفحص في «سجل اليوم والتقارير»
+                💾 تسجيل هذا الفحص في «سجل استلام اليوم»
             </button>
         </div>
 
@@ -624,17 +610,7 @@
         <!-- Direct Add inside Log Tab -->
         <div class="card">
             <div class="card-header">
-                <span>➕ إضافة سريعة مباشرة مع بيانات الفرع</span>
-            </div>
-            <div class="dates-grid">
-                <div class="form-group">
-                    <label class="form-label">اسم الفرع:</label>
-                    <input type="text" id="log-add-bname" class="form-control" placeholder="مثال: فرع المعادي">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">رقم الفرع:</label>
-                    <input type="text" id="log-add-bnum" class="form-control" placeholder="مثال: BR-101">
-                </div>
+                <span>➕ إضافة سريعة مباشرة إلى سجل الاستلام</span>
             </div>
             <div class="dates-grid">
                 <div class="form-group">
@@ -661,10 +637,10 @@
             </button>
         </div>
 
-        <!-- Reports & Filtering Control Panel (Daily / Monthly / Yearly + Branch Filter) -->
+        <!-- Reports & Filtering Control Panel (Daily / Monthly / Yearly) -->
         <div class="card" style="border: 2px solid var(--primary);">
             <div class="card-header">
-                <span>📊 استخراج تقارير الفروع (يومي / شهري / سنوي)</span>
+                <span>📊 استخراج التقارير (يومي / شهري / سنوي)</span>
                 <div style="display:flex; gap:5px; flex-wrap:wrap;">
                     <button type="button" class="btn-sm" style="background:var(--secondary); color:#fff;" onclick="exportLogToCSV()">📥 تصدير التقرير للإكسيل (.xls)</button>
                     <button type="button" class="btn-sm" style="background:#64748B; color:#fff;" onclick="loadSampleLogs()">بيانات تجريبية</button>
@@ -698,11 +674,11 @@
                 <select id="rep-year-input" class="form-control" onchange="renderDailyLog()"></select>
             </div>
 
-            <!-- Branch & Product & Status Filter -->
+            <!-- Product & Status Filter -->
             <div class="dates-grid" style="margin-bottom:10px;">
                 <div class="form-group" style="margin-bottom:0;">
-                    <label class="form-label">بحث باسم الفرع أو الصنف أو المورد:</label>
-                    <input type="text" id="rep-search-item" class="form-control" placeholder="اكتب اسم الفرع أو الصنف للفرز..." oninput="renderDailyLog()">
+                    <label class="form-label">بحث باسم المنتج أو المورد أو الفئة:</label>
+                    <input type="text" id="rep-search-item" class="form-control" placeholder="اكتب اسم المنتج للفرز..." oninput="renderDailyLog()">
                 </div>
                 <div class="form-group" style="margin-bottom:0;">
                     <label class="form-label">حالة القبول / الرفض:</label>
@@ -724,15 +700,15 @@
                 <div class="kpi-box" style="background:var(--highlight-bg); color:var(--highlight-text);"><span class="n" id="kpi-rate">0%</span><span class="t">نسبة القبول</span></div>
             </div>
 
-            <!-- Summary Table by Branch / Product for the Selected Period -->
+            <!-- Summary Table by Product / Category for the Selected Period -->
             <div id="rep-summary-wrap" style="margin-bottom:14px; display:none;">
-                <div style="font-size:0.82rem; font-weight:800; color:var(--primary); margin-bottom:6px;">📌 ملخص الفروع والأصناف المسجلة خلال فترة التقرير:</div>
+                <div style="font-size:0.82rem; font-weight:800; color:var(--primary); margin-bottom:6px;">📌 ملخص الأصناف المسجلة خلال فترة التقرير:</div>
                 <div class="table-wrap">
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>الفرع والصنف</th>
-                                <th>عدد الشحنات</th>
+                                <th>الصنف / المنتج</th>
+                                <th>عدد مرات الفحص</th>
                                 <th>مقبول ✅</th>
                                 <th>مرفوض ❌</th>
                                 <th>نسبة القبول</th>
@@ -897,7 +873,7 @@
     </label>
     <label for="tab-radio-log" class="bnav-lbl" onclick="onTabChanged('log')">
         <span class="bnav-icon">📋</span>
-        <span>سجل الفروع</span>
+        <span>سجل اليوم</span>
     </label>
     <label for="tab-radio-settings" class="bnav-lbl" onclick="onTabChanged('settings')">
         <span class="bnav-icon">⚙️</span>
@@ -906,6 +882,7 @@
 </nav>
 
 <script>
+    // 1. القائمة الافتراضية لأنواع الحدود (المقارنة) شاملاً العلامات الرياضية + المسميات الـ 6 المطلوبة في الصورة
     const DEFAULT_LIMIT_TYPES = [
         { code: "lte", label: "أقل من أو يساوي (<=)", op: "lte", autoTotalDays: 0, autoLimitDays: 0 },
         { code: "lt", label: "أقل من (<)", op: "lt", autoTotalDays: 0, autoLimitDays: 0 },
@@ -921,7 +898,9 @@
         { code: "y5_60m", label: "5 سنوات (60 شهر)", op: "lte", autoTotalDays: 1825, autoLimitDays: 912 }
     ];
 
+    // 2. القائمة الكاملة لجميع الشروط والفئات السابقة والحالية بدون حذف أي بيان
     const INITIAL_RULES = [
+        // المسميات الـ 6 الأساسية + فئات العيش والفريش
         { id: 101, name: "3 أيام (عيش طازج ومخبوزات يومية)", totVal: 3, totUnit: "days", limitType: "lte", limitVal: 1, limitUnit: "days" },
         { id: 102, name: "7 أيام (فريش ومخبوزات قصيرة الأجل)", totVal: 7, totUnit: "days", limitType: "lte", limitVal: 2, limitUnit: "days" },
         { id: 103, name: "3 شهور (90 يوم)", totVal: 90, totUnit: "days", limitType: "m3_90", limitVal: 30, limitUnit: "days" },
@@ -930,6 +909,8 @@
         { id: 106, name: "سنتين (24 شهر)", totVal: 730, totUnit: "days", limitType: "y2_24m", limitVal: 365, limitUnit: "days" },
         { id: 107, name: "3 سنوات (36 شهر)", totVal: 1095, totUnit: "days", limitType: "y3_36m", limitVal: 547, limitUnit: "days" },
         { id: 108, name: "5 سنوات (60 شهر)", totVal: 1825, totUnit: "days", limitType: "y5_60m", limitVal: 912, limitUnit: "days" },
+
+        // المعايير التفصيلية الـ 12 المضافة لإدارة الشروط
         { id: 1, name: "المنتج صلاحيته أقل من أو يساوي 5 أيام", totVal: 5, totUnit: "days", limitType: "lte", limitVal: 1, limitUnit: "days" },
         { id: 2, name: "المنتج صلاحيته أقل من أو يساوي 14 يوم", totVal: 14, totUnit: "days", limitType: "lte", limitVal: 3, limitUnit: "days" },
         { id: 3, name: "المنتج صلاحيته أو يساوي شهر (30 يوم)", totVal: 30, totUnit: "days", limitType: "lte", limitVal: 7, limitUnit: "days" },
@@ -947,10 +928,9 @@
     let limitTypes = JSON.parse(JSON.stringify(DEFAULT_LIMIT_TYPES));
     let rules = JSON.parse(JSON.stringify(INITIAL_RULES));
     let dailyLogs = [];
-    let selectedRuleIndex = 4;
+    let selectedRuleIndex = 4; // Default: سنة (12 شهر)
     let activeDateType = 'prod';
     let currentResult = null;
-    let reportMode = 'all';
 
     function showToast(msg) {
         var t = document.getElementById('toast-msg');
@@ -1009,15 +989,15 @@
 
     function loadData() {
         try {
-            var lt = localStorage.getItem('pro_limit_types_v9');
+            var lt = localStorage.getItem('pro_limit_types_v5');
             if (lt) limitTypes = JSON.parse(lt);
         } catch (e) {}
         try {
-            var r = localStorage.getItem('pro_shelf_rules_v9');
+            var r = localStorage.getItem('pro_shelf_rules_v5');
             if (r) rules = JSON.parse(r);
         } catch (e) {}
         try {
-            var l = localStorage.getItem('pro_daily_logs_v9');
+            var l = localStorage.getItem('pro_daily_logs_v5');
             if (l) {
                 dailyLogs = JSON.parse(l);
             } else {
@@ -1030,11 +1010,13 @@
 
     function saveData() {
         try {
-            localStorage.setItem('pro_limit_types_v9', JSON.stringify(limitTypes));
-            localStorage.setItem('pro_shelf_rules_v9', JSON.stringify(rules));
-            localStorage.setItem('pro_daily_logs_v9', JSON.stringify(dailyLogs));
+            localStorage.setItem('pro_limit_types_v5', JSON.stringify(limitTypes));
+            localStorage.setItem('pro_shelf_rules_v5', JSON.stringify(rules));
+            localStorage.setItem('pro_daily_logs_v5', JSON.stringify(dailyLogs));
         } catch (e) {}
     }
+
+    var reportMode = 'all';
 
     function seedSampleLogs() {
         var today = toISODate(new Date());
@@ -1043,8 +1025,6 @@
             {
                 id: 1,
                 recDate: today,
-                branchName: "فرع المعادي الرئيسي",
-                branchNum: "BR-101",
                 prodName: "أرز أبيض مصري 5 كجم (مضارب الأرز)",
                 ruleName: "سنة (12 شهر)",
                 prodDate: addDaysToISO(today, -110),
@@ -1058,8 +1038,6 @@
             {
                 id: 2,
                 recDate: today,
-                branchName: "فرع مدينة نصر",
-                branchNum: "BR-102",
                 prodName: "لبن مبرد كامل الدسم (مزارع الخير)",
                 ruleName: "المنتج صلاحيته أقل من أو يساوي 14 يوم",
                 prodDate: addDaysToISO(today, -2),
@@ -1073,8 +1051,6 @@
             {
                 id: 3,
                 recDate: today,
-                branchName: "فرع الإسكندرية",
-                branchNum: "BR-201",
                 prodName: "لحوم مبردة تفريغ هواء (توريد مباشر)",
                 ruleName: "اللحوم المعبأة تحت تفريغ الهواء ذو الصلاحية 98 يوماً توريد مباشر",
                 prodDate: addDaysToISO(today, -55),
@@ -1088,8 +1064,6 @@
             {
                 id: 4,
                 recDate: prevMonthDay,
-                branchName: "فرع المعادي الرئيسي",
-                branchNum: "BR-101",
                 prodName: "زيت عباد الشمس 2 لتر (شركة الزيوت)",
                 ruleName: "سنتين (24 شهر)",
                 prodDate: addDaysToISO(prevMonthDay, -200),
@@ -1104,6 +1078,7 @@
         saveData();
     }
 
+    // Render Limit Types Dropdown & Tags
     function renderLimitTypesUI() {
         var sel = document.getElementById('cfg-limit-type');
         var currentVal = sel.value;
@@ -1152,6 +1127,8 @@
         var code = document.getElementById('cfg-limit-type').value;
         var lt = getLimitTypeObj(code);
         if (!lt) return;
+
+        // If user selected one of the preset shelf-life limit types (e.g., 3 شهور (90 يوم), 6 شهور (180 يوم), سنة (12 شهر)...)
         if (lt.autoTotalDays > 0) {
             if (!document.getElementById('cfg-name').value.trim()) {
                 document.getElementById('cfg-name').value = lt.label;
@@ -1172,7 +1149,7 @@
         var autoLim = Number(document.getElementById('new-ltype-limdays').value) || 0;
 
         if (!lbl) {
-            alert('يرجى كتابة مسمى نوع الحد الجديد.');
+            alert('يرجى كتابة مسمى نوع الحد الجديد (مثال: 4 شهور (120 يوم) أو أقل من أو يساوي ثلث المدة).');
             return;
         }
 
@@ -1202,27 +1179,42 @@
             return;
         }
         var target = limitTypes[idx];
-        if (confirm('هل تريد إزالة "' + target.label + '"؟')) {
+        if (confirm('هل تريد إزالة "' + target.label + '" من قائمة نوع الحد؟')) {
             limitTypes.splice(idx, 1);
             saveData();
             renderLimitTypesUI();
             renderSettingsTable();
-            showToast('🗑️ تم حذف نوع الحد');
+            showToast('🗑️ تم حذف نوع الحد من القائمة');
         }
     }
 
     function restoreDefaultLimitTypes() {
-        if (confirm('استعادة أنواع الحدود الافتراضية؟')) {
+        if (confirm('استعادة القائمة الافتراضية لأنواع الحدود؟')) {
             limitTypes = JSON.parse(JSON.stringify(DEFAULT_LIMIT_TYPES));
             saveData();
             renderLimitTypesUI();
             renderSettingsTable();
-            showToast('🔄 تمت الاستعادة بنجاح');
+            showToast('🔄 تمت استعادة أنواع الحدود الافتراضية');
         }
     }
 
+    // Render Category Pills + Dropdowns
     function renderCategoryDropdown() {
         if (selectedRuleIndex >= rules.length) selectedRuleIndex = 0;
+
+        // 1. Pills Grid
+        var pillsContainer = document.getElementById('category-pills-container');
+        pillsContainer.innerHTML = '';
+        for (var p = 0; p < rules.length; p++) {
+            var rp = rules[p];
+            var pill = document.createElement('div');
+            pill.className = 'cat-pill' + (p === selectedRuleIndex ? ' active' : '');
+            pill.innerHTML = '<span>' + rp.name + '</span><small>الحد: ' + rp.limitVal + ' ' + unitLabelAr(rp.limitUnit) + '</small>';
+            pill.setAttribute('onclick', 'selectCategoryByIndex(' + p + ')');
+            pillsContainer.appendChild(pill);
+        }
+
+        // 2. Main Dropdown in Quick Tab
         var sel = document.getElementById('q-category-select');
         sel.innerHTML = '';
         for (var i = 0; i < rules.length; i++) {
@@ -1234,6 +1226,7 @@
         }
         sel.value = selectedRuleIndex;
 
+        // 3. Log Tab Dropdown
         var logSel = document.getElementById('log-add-cat');
         logSel.innerHTML = '';
         for (var k = 0; k < rules.length; k++) {
@@ -1276,7 +1269,9 @@
         activeDateType = type;
         document.getElementById('dtype-prod').className = 'dtype-btn' + (type === 'prod' ? ' active' : '');
         document.getElementById('dtype-exp').className = 'dtype-btn' + (type === 'exp' ? ' active' : '');
+
         document.getElementById('exp-only-helper-box').style.display = (type === 'exp') ? 'block' : 'none';
+
         document.getElementById('lbl-product-date').innerText = (type === 'prod')
             ? 'تاريخ الإنتاج المدون على المنتج:'
             : 'تاريخ الانتهاء المدون على المنتج:';
@@ -1327,6 +1322,7 @@
             ? halfDays
             : toDays(rule.limitVal, rule.limitUnit);
 
+        // If user overrode totalDays in Expiry-Only preset and rule uses half-life, adjust limitDays proportionally
         if (activeDateType === 'exp' && document.getElementById('q-exp-duration-preset').value !== 'rule') {
             if (rule.limitVal === Math.floor(toDays(rule.totVal, rule.totUnit) / 2)) {
                 limitDays = halfDays;
@@ -1362,7 +1358,7 @@
         document.getElementById('res-pct').innerText = ((elapsed / totalDays) * 100).toFixed(1) + '%';
 
         document.getElementById('res-rule-note').innerText =
-            'المعيار: [' + rule.name + '] | نوع الحد: [' + ltObj.label + '] | نصف المدة: (' + halfDate + ') | آخر موعد: (' + cutoffDate + ')';
+            'المعيار المطبق: [' + rule.name + '] | نوع الحد: [' + ltObj.label + '] | 📅 تاريخ نصف المدة: (' + halfDate + ') | 🛑 آخر تاريخ مسموح للاستلام: (' + cutoffDate + ')';
 
         var banner = document.getElementById('decision-banner');
         var decTitle = document.getElementById('dec-title');
@@ -1380,41 +1376,38 @@
             banner.classList.add('warn');
             prog.style.background = '#D97706';
             decTitle.innerText = '⚠️ خطأ في التاريخ المدخل';
-            decSub.innerText = 'تاريخ الإنتاج المحسوب في المستقبل مقارنة بتاريخ الاستلام.';
-            decHalf.innerText = '';
+            decSub.innerText = 'تاريخ الإنتاج المحسوب (' + prodDate + ') في المستقبل مقارنة بتاريخ الاستلام (' + recDate + ').';
+            decHalf.innerText = '📅 تاريخ نصف المدة المحسوب: ' + halfDate;
         } else if (elapsed > totalDays) {
             banner.classList.add('reject');
             prog.style.background = '#DC2626';
             decTitle.innerText = '❌ مرفوض نهائياً (منتهي الصلاحية)';
-            decSub.innerText = 'انتهت صلاحية المنتج في (' + expDate + ').';
-            decHalf.innerText = 'تعدى فترة الصلاحية الكلية.';
+            decSub.innerText = 'انتهت صلاحية المنتج في (' + expDate + ') وتجاوز آخر موعد استلام (' + cutoffDate + ').';
+            decHalf.innerText = '📅 تاريخ نصف المدة كان: ' + halfDate + ' (تعدى نصف المدة والانتهاء)';
         } else {
+            // In receiving inspection, elapsed days must not exceed the allowed limit days
             if (opMode === 'lt') isAccepted = (elapsed < limitDays);
             else isAccepted = (elapsed <= limitDays);
 
             if (isAccepted) {
                 banner.classList.add('accept');
                 prog.style.background = '#16A34A';
-                decTitle.innerText = '✅ مقبول للاستلام';
-                decSub.innerText = 'مطابق لشرط الجودة — متبقي ' + remCutoff + ' يوم لآخر موعد مسموح (' + cutoffDate + ').';
-                decHalf.innerText = '📅 تاريخ نصف الصلاحية (50%): ' + halfDate + ' (لم يتعدَّ نصف المدة بـ ' + remHalf + ' يوم)';
+                decTitle.innerText = '✅ مقبول للاستلام (مطابق للشرط)';
+                decSub.innerText = 'مر على الإنتاج ' + elapsed + ' يوم من أصل ' + limitDays + ' يوم مسموح — متبقي ' + remCutoff + ' يوم حتى آخر موعد استلام (' + cutoffDate + ').';
+                decHalf.innerText = '📅 تاريخ نصف المدة (50%): ' + halfDate + (remHalf >= 0 ? (' — ✅ لم يتعدَّ نصف المدة (متبقي ' + remHalf + ' يوم)') : (' — ⚠️ تخطى نصف المدة بـ ' + Math.abs(remHalf) + ' يوم'));
             } else {
                 banner.classList.add('reject');
                 prog.style.background = '#DC2626';
-                decTitle.innerText = '❌ مرفوض للاستلام';
-                decSub.innerText = 'تخطي الحد المسموح للاستلام (' + cutoffDate + ').';
-                decHalf.innerText = '📅 تاريخ نصف الصلاحية: ' + halfDate + (remHalf < 0 ? ' (تعدى نصف المدة)' : '');
+                decTitle.innerText = '❌ مرفوض للاستلام (تعدى الشرط المسموح)';
+                decSub.innerText = 'مر على الإنتاج ' + elapsed + ' يوم وتخطى آخر موعد مسموح للاستلام (' + cutoffDate + ') بـ ' + Math.abs(remCutoff) + ' يوم.';
+                decHalf.innerText = '📅 تاريخ نصف المدة (50%): ' + halfDate + (remHalf >= 0 ? (' — (متبقي ' + remHalf + ' يوم لنصف المدة ولكن مرفوض لتجاوز شرط الصنف)') : (' — ❌ تعدى تاريخ نصف المدة منذ ' + Math.abs(remHalf) + ' يوم'));
             }
         }
 
         var itemName = document.getElementById('q-item-name').value.trim();
-        var bName = document.getElementById('q-branch-name').value.trim();
-        var bNum = document.getElementById('q-branch-num').value.trim();
         currentResult = {
             id: Date.now(),
             recDate: recDate,
-            branchName: bName || 'فرع عام',
-            branchNum: bNum || '-',
             prodName: itemName || rule.name,
             ruleName: rule.name,
             prodDate: prodDate,
@@ -1456,12 +1449,10 @@
         saveData();
         document.getElementById('q-item-name').value = '';
         renderDailyLog();
-        showToast('✅ تم تسجيل الفحص في السجل بنجاح');
+        showToast('✅ تم تسجيل الفحص في سجل اليوم بنجاح');
     }
 
     function directAddFromLogTab() {
-        var bName = document.getElementById('log-add-bname').value.trim();
-        var bNum = document.getElementById('log-add-bnum').value.trim();
         var name = document.getElementById('log-add-name').value.trim();
         var sup = document.getElementById('log-add-supplier').value.trim();
         var catIdx = Number(document.getElementById('log-add-cat').value);
@@ -1489,8 +1480,6 @@
         dailyLogs.unshift({
             id: Date.now(),
             recDate: recDate,
-            branchName: bName || 'فرع عام',
-            branchNum: bNum || '-',
             prodName: fullTitle,
             ruleName: rule.name,
             prodDate: pDate,
@@ -1503,12 +1492,10 @@
         });
 
         saveData();
-        document.getElementById('log-add-bname').value = '';
-        document.getElementById('log-add-bnum').value = '';
         document.getElementById('log-add-name').value = '';
         document.getElementById('log-add-supplier').value = '';
         renderDailyLog();
-        showToast('✅ تمت الإضافة إلى السجل بنجاح!');
+        showToast('✅ تمت إضافة الصنف إلى سجل استلام اليوم!');
     }
 
     function populateYearSelect() {
@@ -1574,7 +1561,7 @@
             var matchStatus = (statusVal === 'all') || (it.status === statusVal);
             var matchSearch = true;
             if (searchVal) {
-                var combined = ((it.branchName || '') + ' ' + (it.branchNum || '') + ' ' + (it.prodName || '') + ' ' + (it.ruleName || '')).toLowerCase();
+                var combined = ((it.prodName || '') + ' ' + (it.ruleName || '')).toLowerCase();
                 matchSearch = (combined.indexOf(searchVal) !== -1);
             }
 
@@ -1607,18 +1594,18 @@
         var container = document.getElementById('daily-log-container');
         var tot = filtered.length;
         var acc = 0, rej = 0;
-        var branchStats = {};
+        var prodStats = {};
 
         for (var i = 0; i < filtered.length; i++) {
             var item = filtered[i];
             if (item.status === 'accept') acc++; else rej++;
 
-            var bKey = (item.branchName || 'فرع عام') + (item.branchNum ? ' (' + item.branchNum + ')' : '');
-            if (!branchStats[bKey]) {
-                branchStats[bKey] = { total: 0, acc: 0, rej: 0 };
+            var pKey = item.prodName || 'غير مسمى';
+            if (!prodStats[pKey]) {
+                prodStats[pKey] = { total: 0, acc: 0, rej: 0 };
             }
-            branchStats[bKey].total++;
-            if (item.status === 'accept') branchStats[bKey].acc++; else branchStats[bKey].rej++;
+            prodStats[pKey].total++;
+            if (item.status === 'accept') prodStats[pKey].acc++; else prodStats[pKey].rej++;
         }
         var rate = tot > 0 ? Math.round((acc / tot) * 100) : 0;
 
@@ -1627,15 +1614,16 @@
         document.getElementById('kpi-rej').innerText = rej;
         document.getElementById('kpi-rate').innerText = rate + '%';
 
+        // Render Product Summary Breakdown Table
         var sumWrap = document.getElementById('rep-summary-wrap');
         var sumTbody = document.getElementById('rep-summary-tbody');
-        var bKeys = Object.keys(branchStats);
-        if (bKeys.length > 0 && sumWrap && sumTbody) {
+        var pKeys = Object.keys(prodStats);
+        if (pKeys.length > 0 && sumWrap && sumTbody) {
             sumWrap.style.display = 'block';
             sumTbody.innerHTML = '';
-            for (var s = 0; s < bKeys.length; s++) {
-                var k = bKeys[s];
-                var st = branchStats[k];
+            for (var s = 0; s < pKeys.length; s++) {
+                var k = pKeys[s];
+                var st = prodStats[k];
                 var pRate = Math.round((st.acc / st.total) * 100);
                 var tr = document.createElement('tr');
                 tr.innerHTML =
@@ -1651,7 +1639,7 @@
         }
 
         if (tot === 0) {
-            container.innerHTML = '<div style="text-align:center; padding:20px; color:#64748B; font-weight:700;">لا توجد شحنات مسجلة في هذه الفترة أو الفرع المحدد.</div>';
+            container.innerHTML = '<div style="text-align:center; padding:20px; color:#64748B; font-weight:700;">لا توجد شحنات مسجلة في هذه الفترة الزمنية (يمكنك الضغط على «🌐 شامل الكل» لعرض كل التواريخ).</div>';
             return;
         }
 
@@ -1660,11 +1648,9 @@
             var it = filtered[j];
             var card = document.createElement('div');
             card.className = 'log-card ' + it.status;
-            var bInfo = (it.branchName ? it.branchName : 'فرع عام') + (it.branchNum ? ' (' + it.branchNum + ')' : '');
             card.innerHTML =
                 '<div class="log-card-top"><span>📦 ' + it.prodName + '</span><span style="color:' + (it.status==='accept'?'#16A34A':'#DC2626') + ';">' + it.decisionText + '</span></div>' +
                 '<div class="log-card-body">' +
-                '• 🏢 الفرع: <b style="color:var(--primary);">' + bInfo + '</b><br>' +
                 '• تاريخ الاستلام: <b>' + it.recDate + '</b> | المعيار: <b>' + it.ruleName + '</b><br>' +
                 '• تاريخ الإنتاج المدون: <b>' + it.prodDate + '</b> | الانتهاء: <b>' + it.expDate + '</b><br>' +
                 '• 📅 تاريخ نصف المدة (50%): <b style="color:#9A3412;">' + it.halfDate + '</b><br>' +
@@ -1686,7 +1672,7 @@
     function loadSampleLogs() {
         seedSampleLogs();
         setReportMode('all');
-        showToast('✅ تم تحميل بيانات تجريبية للفروع');
+        showToast('✅ تم تحميل بيانات تجريبية وعرض التقرير الشامل');
     }
 
     function clearAllLogs() {
@@ -1699,7 +1685,7 @@
 
     function exportLogToCSV() {
         var filtered = getFilteredReportLogs();
-        if (filtered.length === 0) { alert('لا توجد بيانات لتصديرها!'); return; }
+        if (filtered.length === 0) { alert('لا توجد بيانات في فترة التقرير المحددة لتصديرها!'); return; }
         var today = toISODate(new Date());
         var periodTitle = getReportPeriodLabel();
         var acc = 0, rej = 0;
@@ -1711,11 +1697,9 @@
             var bgStatus = isAcc ? '#DCFCE7' : '#FEE2E2';
             var colorStatus = isAcc ? '#14532D' : '#7F1D1D';
             var rowBg = (i % 2 === 0) ? '#FFFFFF' : '#F8FAFC';
-            var bNameStr = (r.branchName || 'فرع عام') + (r.branchNum ? ' (' + r.branchNum + ')' : '');
             rowsHtml += '<tr style="background:' + rowBg + '; text-align:center; font-family:Arial, sans-serif; font-size:11pt;">' +
                 '<td style="border:1px solid #94A3B8; padding:6px;">' + (i + 1) + '</td>' +
                 '<td style="border:1px solid #94A3B8; padding:6px; mso-number-format:\'\@\';">' + r.recDate + '</td>' +
-                '<td style="border:1px solid #94A3B8; padding:6px; font-weight:bold;">' + bNameStr + '</td>' +
                 '<td style="border:1px solid #94A3B8; padding:6px; font-weight:bold; text-align:right;">' + r.prodName + '</td>' +
                 '<td style="border:1px solid #94A3B8; padding:6px; text-align:right;">' + r.ruleName + '</td>' +
                 '<td style="border:1px solid #94A3B8; padding:6px; mso-number-format:\'\@\';">' + r.prodDate + '</td>' +
@@ -1733,18 +1717,17 @@
             'xmlns="http://www.w3.org/TR/REC-html40" dir="rtl" lang="ar">' +
             '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">' +
             '<!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>' +
-            '<x:Name>تقرير الفروع</x:Name>' +
+            '<x:Name>تقرير استلام البضائع</x:Name>' +
             '<x:WorksheetOptions><x:DisplayRightToLeft/><x:DisplayGridlines/></x:WorksheetOptions>' +
             '</x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->' +
             '</head><body dir="rtl" style="font-family:Arial, sans-serif;">' +
             '<table dir="rtl" border="1" style="border-collapse:collapse; width:100%;">' +
             '<thead>' +
-            '<tr><th colspan="11" style="background:#1B365D; color:#FFFFFF; font-size:14pt; padding:10px; text-align:center;">' + periodTitle + '</th></tr>' +
-            '<tr><th colspan="11" style="background:#F1F5F9; color:#0F172A; font-size:11pt; padding:8px; text-align:center;">إجمالي الشحنات: ' + filtered.length + ' | مقبول: ' + acc + ' | مرفوض: ' + rej + ' | نسبة القبول: ' + rate + '%</th></tr>' +
+            '<tr><th colspan="10" style="background:#1B365D; color:#FFFFFF; font-size:14pt; padding:10px; text-align:center;">' + periodTitle + '</th></tr>' +
+            '<tr><th colspan="10" style="background:#F1F5F9; color:#0F172A; font-size:11pt; padding:8px; text-align:center;">إجمالي الشحنات: ' + filtered.length + ' | مقبول: ' + acc + ' | مرفوض: ' + rej + ' | نسبة القبول: ' + rate + '%</th></tr>' +
             '<tr style="background:#2C3E50; color:#FFFFFF; font-size:11pt; font-weight:bold; text-align:center;">' +
             '<th style="border:1px solid #94A3B8; padding:8px;">م</th>' +
             '<th style="border:1px solid #94A3B8; padding:8px;">تاريخ الاستلام</th>' +
-            '<th style="border:1px solid #94A3B8; padding:8px;">الفرع (الاسم ورقم الفرع)</th>' +
             '<th style="border:1px solid #94A3B8; padding:8px;">اسم الصنف والمورد</th>' +
             '<th style="border:1px solid #94A3B8; padding:8px;">فئة الصلاحية / الشرط المطبق</th>' +
             '<th style="border:1px solid #94A3B8; padding:8px;">تاريخ الإنتاج المدون على المنتج</th>' +
@@ -1758,12 +1741,13 @@
         var blob = new Blob(['\uFEFF' + excelTemplate], { type: 'application/vnd.ms-excel;charset=utf-8;' });
         var a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = 'تقرير_استلام_الفروع_' + today + '.xls';
+        a.download = 'تقرير_استلام_البضائع_' + today + '.xls';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
     }
 
+    // Settings Management
     function saveRuleConfig() {
         var editIdx = Number(document.getElementById('edit-rule-index').value);
         var name = document.getElementById('cfg-name').value.trim();
@@ -1774,7 +1758,7 @@
         var limitUnit = document.getElementById('cfg-limit-unit').value;
 
         if (!name || totVal <= 0 || limitVal <= 0) {
-            alert('يرجى إكمال بيانات الشرط بشكل صحيح.');
+            alert('يرجى إكمال بيانات الشرط (الاسم، مدة الصلاحية، وقيمة الحد) بشكل صحيح.');
             return;
         }
 
@@ -1799,7 +1783,7 @@
         renderCategoryDropdown();
         renderSettingsTable();
         runCalculation();
-        showToast('✅ تم حفظ الشرط بنجاح');
+        showToast('✅ تم حفظ الشرط وتحديث القوائم بنجاح');
     }
 
     function editRule(idx) {
@@ -1808,6 +1792,8 @@
         document.getElementById('cfg-name').value = r.name;
         document.getElementById('cfg-tot-val').value = r.totVal;
         document.getElementById('cfg-tot-unit').value = r.totUnit;
+
+        // Ensure limitType exists in dropdown
         if (!limitTypes.some(function(x){ return x.code === r.limitType; })) {
             limitTypes.push({ code: r.limitType, label: r.limitType, op: 'lte', autoTotalDays: 0, autoLimitDays: 0 });
             renderLimitTypesUI();
@@ -1833,19 +1819,19 @@
 
     function deleteRule(idx) {
         if (rules.length <= 1) { alert('يجب بقاء شرط واحد على الأقل'); return; }
-        if (confirm('هل تريد حذف هذا الشرط؟')) {
+        if (confirm('هل تريد حذف الشرط: "' + rules[idx].name + '"؟')) {
             rules.splice(idx, 1);
             if (selectedRuleIndex >= rules.length) selectedRuleIndex = 0;
             saveData();
             renderCategoryDropdown();
             renderSettingsTable();
             runCalculation();
-            showToast('🗑️ تم الحذف');
+            showToast('🗑️ تم حذف الشرط');
         }
     }
 
     function restoreDefaultRules() {
-        if (confirm('استعادة كافة المعايير الأصلية؟')) {
+        if (confirm('استعادة كافة المعايير وأنواع الحدود الأصلية؟')) {
             limitTypes = JSON.parse(JSON.stringify(DEFAULT_LIMIT_TYPES));
             rules = JSON.parse(JSON.stringify(INITIAL_RULES));
             selectedRuleIndex = 4;
@@ -1854,7 +1840,7 @@
             renderCategoryDropdown();
             renderSettingsTable();
             runCalculation();
-            showToast('🔄 تمت الاستعادة بنجاح');
+            showToast('🔄 تمت استعادة كافة المعايير الأصلية بنجاح');
         }
     }
 
@@ -1884,8 +1870,6 @@
             var today = toISODate(new Date());
             document.getElementById('q-receive-date').value = today;
             document.getElementById('q-product-date').value = addDaysToISO(today, -120);
-            if (document.getElementById('q-branch-name')) document.getElementById('q-branch-name').value = 'فرع المعادي الرئيسي';
-            if (document.getElementById('q-branch-num')) document.getElementById('q-branch-num').value = 'BR-101';
             document.getElementById('log-add-pdate').value = addDaysToISO(today, -10);
             if (document.getElementById('rep-date-input')) document.getElementById('rep-date-input').value = today;
             if (document.getElementById('rep-month-input')) document.getElementById('rep-month-input').value = today.substring(0, 7);
